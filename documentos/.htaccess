@@ -1,0 +1,16 @@
+# Permitir acesso a arquivos
+Options +Indexes
+IndexOptions FancyIndexing
+
+# Proteger contra execução de scripts
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phps|cgi|pl|exe)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Permitir apenas tipos de arquivo específicos
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|jpg|jpeg|png|gif|zip|rar|dwg|dxf)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+

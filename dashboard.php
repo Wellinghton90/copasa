@@ -823,6 +823,48 @@ if (isset($_GET['logout'])) {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 25, 41, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(0, 188, 212, 0.2);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .container-fluid {
                 padding: 20px;
@@ -914,6 +956,12 @@ if (isset($_GET['logout'])) {
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Carregando...</div>
+    </div>
+
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="#">
@@ -1414,10 +1462,6 @@ if (isset($_GET['logout'])) {
         }
 
         // Funções de ação
-        function verObra(id) {
-            alert('Ver obra ID: ' + id + '\n\nEsta funcionalidade será implementada em breve!');
-        }
-
         function editarObra(id) {
             alert('Editar obra ID: ' + id + '\n\nEsta funcionalidade será implementada em breve!');
         }
@@ -1443,6 +1487,21 @@ if (isset($_GET['logout'])) {
 
         // Atualizar estatísticas periodicamente
         setInterval(carregarEstatisticas, 60000); // A cada 1 minuto
+
+        // Funções de Loading
+        function showLoading(message = 'Carregando...') {
+            document.getElementById('loadingText').textContent = message;
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        // Interceptar cliques em links de detalhes da obra
+        $(document).on('click', 'a[href^="obra_detalhes.php"]', function() {
+            showLoading('Carregando detalhes da obra...');
+        });
 
         // Funções de Controle de Colunas
         function carregarConfiguracaoColunas() {
@@ -1629,6 +1688,15 @@ if (isset($_GET['logout'])) {
                 return;
             }
             
+            // Mostrar loading
+            showLoading('Salvando alterações...');
+            
+            // Fechar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalAlteracao'));
+            if (modal) {
+                modal.hide();
+            }
+            
             // Enviar dados
             fetch('alterar_dados.php', {
                 method: 'POST',
@@ -1638,12 +1706,15 @@ if (isset($_GET['logout'])) {
             .then(data => {
                 if (data.success) {
                     alert('Dados alterados com sucesso! Você será redirecionado para o login.');
+                    showLoading('Redirecionando...');
                     window.location.href = 'index.php?success=' + encodeURIComponent(data.message);
                 } else {
+                    hideLoading();
                     alert('Erro: ' + data.message);
                 }
             })
             .catch(error => {
+                hideLoading();
                 console.error('Erro:', error);
                 alert('Erro ao processar solicitação. Tente novamente.');
             });

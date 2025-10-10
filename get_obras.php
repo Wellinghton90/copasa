@@ -150,9 +150,9 @@ try {
         // Botões de ação
         $acoes = '
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-primary" onclick="verObra(' . $obra['id'] . ')" title="Ver Detalhes">
+                <a href="obra_detalhes.php?id=' . $obra['id'] . '" class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
                     <i class="fas fa-eye"></i>
-                </button>
+                </a>
                 <button type="button" class="btn btn-sm btn-outline-warning" onclick="editarObra(' . $obra['id'] . ')" title="Editar">
                     <i class="fas fa-edit"></i>
                 </button>

@@ -1,0 +1,16 @@
+# Permitir acesso a arquivos de mídia
+Options +Indexes
+IndexOptions FancyIndexing
+
+# Proteger contra execução de scripts
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phps|cgi|pl|exe)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Permitir apenas tipos de arquivo específicos (vídeos e imagens)
+<FilesMatch "\.(mp4|avi|mov|wmv|flv|mkv|webm|m4v|mpeg|mpg|jpg|jpeg|png|gif|bmp)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
