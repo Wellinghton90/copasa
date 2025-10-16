@@ -23,7 +23,7 @@ try {
     $stmt = $conn->prepare("SELECT * FROM obras WHERE id = ?");
     $stmt->execute([$obra_id]);
     $obra = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$obra) {
         header('Location: dashboard.php?error=' . urlencode('Obra não encontrada.'));
         exit();
@@ -69,19 +69,20 @@ if (!file_exists($videos_path)) {
 }
 
 // Função para listar vídeos recursivamente
-function listarVideos($dir) {
+function listarVideos($dir)
+{
     $videos = [];
     $extensoes_video = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', 'mpeg', 'mpg'];
-    
+
     if (!is_dir($dir)) {
         return $videos;
     }
-    
+
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     foreach ($iterator as $file) {
         if ($file->isFile()) {
             $extensao = strtolower($file->getExtension());
@@ -97,7 +98,7 @@ function listarVideos($dir) {
             }
         }
     }
-    
+
     return $videos;
 }
 
@@ -138,15 +139,19 @@ if (isset($_GET['logout'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes da Obra - COPASA</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
+    <!-- DataTables CSS -->
+    <link href="dataTables.dataTables.min.css" rel="stylesheet">
+
     <style>
         :root {
             --primary-color: #00bcd4;
@@ -179,7 +184,7 @@ if (isset($_GET['logout'])) {
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 80%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(38, 198, 218, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(0, 96, 100, 0.1) 0%, transparent 50%);
@@ -188,9 +193,19 @@ if (isset($_GET['logout'])) {
         }
 
         @keyframes backgroundMove {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
         }
 
         /* Navbar */
@@ -259,7 +274,7 @@ if (isset($_GET['logout'])) {
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            box-shadow: 
+            box-shadow:
                 0 25px 45px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -312,7 +327,7 @@ if (isset($_GET['logout'])) {
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            box-shadow: 
+            box-shadow:
                 0 25px 45px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -432,6 +447,7 @@ if (isset($_GET['logout'])) {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -470,7 +486,7 @@ if (isset($_GET['logout'])) {
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            box-shadow: 
+            box-shadow:
                 0 25px 45px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -517,6 +533,19 @@ if (isset($_GET['logout'])) {
             font-size: 0.8rem;
             padding: 20px 15px;
             border-bottom: 2px solid rgba(0, 188, 212, 0.2);
+            cursor: pointer;
+        }
+
+        .table thead th.sorting,
+        .table thead th.sorting_asc,
+        .table thead th.sorting_desc {
+            cursor: pointer;
+        }
+
+        .table thead th.sorting:hover,
+        .table thead th.sorting_asc:hover,
+        .table thead th.sorting_desc:hover {
+            background: rgba(0, 188, 212, 0.2);
         }
 
         .table tbody tr {
@@ -542,7 +571,7 @@ if (isset($_GET['logout'])) {
         }
 
         .table tbody td a:hover {
-            color: var(--accent-color);
+            color: black;
         }
 
         /* Botões */
@@ -690,14 +719,90 @@ if (isset($_GET['logout'])) {
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Desabilitar botões durante loading */
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+
+        /* DataTables Customização */
+        .dataTables_wrapper {
+            color: var(--text-light);
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 188, 212, 0.08);
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 5px 10px;
+            margin: 0 10px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: var(--text-light) !important;
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 8px;
+            padding: 5px 12px;
+            margin: 0 2px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            color: var(--accent-color) !important;
+            background: rgba(0, 188, 212, 0.2) !important;
+            border: 1px solid rgba(0, 188, 212, 0.3);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            color: white !important;
+            background: var(--gradient-primary) !important;
+            border: 1px solid var(--primary-color);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        div.dt-container .dt-length,
+        div.dt-container .dt-search,
+        div.dt-container .dt-info,
+        div.dt-container .dt-processing,
+        div.dt-container .dt-paging {
+            color: var(--text-light);
         }
 
         /* Responsivo */
@@ -726,13 +831,14 @@ if (isset($_GET['logout'])) {
         }
     </style>
 </head>
+
 <body>
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
         <div class="loading-text" id="loadingText">Carregando...</div>
     </div>
-    
+
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="dashboard.php">
@@ -774,7 +880,7 @@ if (isset($_GET['logout'])) {
                 <i class="fas fa-clipboard-list"></i>
                 Informações da obra de <?= htmlspecialchars($obra['cidade']) ?>
             </h3>
-            
+
             <form>
                 <!-- Campos sempre visíveis -->
                 <div class="row">
@@ -798,76 +904,76 @@ if (isset($_GET['logout'])) {
 
                 <!-- Campos expandíveis (ocultos por padrão) -->
                 <div id="dadosExpandiveis" class="dados-expandiveis" style="display: none;">
-                <div class="row">
-                    <div class="col-md-8 mb-3">
-                        <label class="form-label">Localização</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['localizacao'] ?? '') ?>" readonly>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">Localização</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['localizacao'] ?? '') ?>" readonly>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Latitude</label>
+                            <input id="input_lat" type="text" class="form-control" value="<?= htmlspecialchars($obra['latitude'] ?? '-') ?>" readonly>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">Longitude</label>
+                            <input id="input_lng" type="text" class="form-control" value="<?= htmlspecialchars($obra['longitude'] ?? '-') ?>" readonly>
+                        </div>
                     </div>
-                    <div class="col-md-2 mb-3">
-                        <label class="form-label">Latitude</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['latitude'] ?? '-') ?>" readonly>
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <label class="form-label">Longitude</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['longitude'] ?? '-') ?>" readonly>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Cidade</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['cidade']) ?>" readonly>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['cidade']) ?>" readonly>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">UF</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['uf']) ?>" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Situação</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['situacao']) ?>" readonly>
+                        </div>
                     </div>
-                    <div class="col-md-2 mb-3">
-                        <label class="form-label">UF</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['uf']) ?>" readonly>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Situação</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['situacao']) ?>" readonly>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Data de Início</label>
-                        <input type="text" class="form-control" value="<?= $obra['data_inicio'] ? date('d/m/Y', strtotime($obra['data_inicio'])) : '-' ?>" readonly>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Data de Início</label>
+                            <input type="text" class="form-control" value="<?= $obra['data_inicio'] ? date('d/m/Y', strtotime($obra['data_inicio'])) : '-' ?>" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Data Prevista</label>
+                            <input type="text" class="form-control" value="<?= $obra['data_prevista'] ? date('d/m/Y', strtotime($obra['data_prevista'])) : '-' ?>" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Data de Conclusão</label>
+                            <input type="text" class="form-control" value="<?= $obra['data_conclusao'] ? date('d/m/Y', strtotime($obra['data_conclusao'])) : '-' ?>" readonly>
+                        </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Data Prevista</label>
-                        <input type="text" class="form-control" value="<?= $obra['data_prevista'] ? date('d/m/Y', strtotime($obra['data_prevista'])) : '-' ?>" readonly>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Data de Conclusão</label>
-                        <input type="text" class="form-control" value="<?= $obra['data_conclusao'] ? date('d/m/Y', strtotime($obra['data_conclusao'])) : '-' ?>" readonly>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Orçamento Total</label>
-                        <input type="text" class="form-control" value="<?= $obra['orcamento_total'] ? 'R$ ' . number_format($obra['orcamento_total'], 2, ',', '.') : '-' ?>" readonly>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Orçamento Total</label>
+                            <input type="text" class="form-control" value="<?= $obra['orcamento_total'] ? 'R$ ' . number_format($obra['orcamento_total'], 2, ',', '.') : '-' ?>" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Orçamento Utilizado</label>
+                            <input type="text" class="form-control" value="<?= $obra['orcamento_utilizado'] ? 'R$ ' . number_format($obra['orcamento_utilizado'], 2, ',', '.') : '-' ?>" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Responsável</label>
+                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['responsavel'] ?? '-') ?>" readonly>
+                        </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Orçamento Utilizado</label>
-                        <input type="text" class="form-control" value="<?= $obra['orcamento_utilizado'] ? 'R$ ' . number_format($obra['orcamento_utilizado'], 2, ',', '.') : '-' ?>" readonly>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Responsável</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['responsavel'] ?? '-') ?>" readonly>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label">Observações</label>
-                        <textarea class="form-control" rows="3" readonly><?= htmlspecialchars($obra['observacoes'] ?? '') ?></textarea>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" rows="3" readonly><?= htmlspecialchars($obra['observacoes'] ?? '') ?></textarea>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <!-- Fim dos campos expandíveis -->
             </form>
-            
+
             <!-- Puxador de gaveta -->
             <div class="puxador-gaveta" id="puxadorGaveta" onclick="toggleDadosObra()">
                 <i class="fas fa-chevron-down" id="iconExpandir"></i>
@@ -1037,13 +1143,16 @@ if (isset($_GET['logout'])) {
                                             <?= htmlspecialchars($projeto['nome']) ?>
                                         </td>
                                         <td>
-                                            <a href="nuvem.php?projeto=<?= urlencode($projeto['nome']) ?>" class="btn btn-sm btn-outline-primary" onclick="showLoading('Carregando nuvem de pontos...')">
+                                            <a target="_blank" href="nuvem.php?projeto=<?= urlencode($projeto['nome']) ?>&cidade=<?= urlencode($obra['cidade']) ?>" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-cube me-2"></i>
                                                 Nuvem de pontos
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="ortofoto.php?projeto=<?= urlencode($projeto['nome']) ?>" class="btn btn-sm btn-outline-info" onclick="showLoading('Carregando ortofoto...')">
+
+                                            <a target="_blank" href="desenhos_detalhes.php?projeto=<?= urlencode($obra['cidade']) ?>&cords=<?= urlencode($obra['latitude']) ?>&lng=<?= urlencode($obra['longitude']) ?>&cidade=<?= urlencode($projeto['nome']) ?>/3_dsm_ortho/2_mosaic/google_tiles/<?= urlencode($projeto['nome']) ?>_mosaic.html" class="btn btn-sm btn-outline-info">
+
+                                                <!--<a target="_blank" href="ortofoto.php?projeto= ?= //urlencode($projeto['nome']) ?>" class="btn btn-sm btn-outline-info">-->
                                                 <i class="fas fa-map me-2"></i>
                                                 Ortofoto
                                             </a>
@@ -1067,9 +1176,98 @@ if (isset($_GET['logout'])) {
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="jquery/jquery-3.7.1.min.js"></script>
+    <script src="jquery.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="dataTables.min.js"></script>
 
     <script>
+        // Inicializar DataTables quando o documento estiver pronto
+        $(document).ready(function() {
+            // Variáveis para armazenar as tabelas
+            let documentosTable, videosTable, projetosTable;
+            
+            // Configuração para tabela de documentos
+            if ($('#documentosTable').length) {
+                documentosTable = $('#documentosTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+                    },
+                    pageLength: 10,
+                    ordering: true,
+                    searching: true,
+                    info: true,
+                    lengthMenu: [
+                        [5, 10, 25, 50, -1],
+                        [5, 10, 25, 50, "Todos"]
+                    ],
+                    order: [
+                        [3, 'desc']
+                    ], // Ordenar pela coluna de Data (índice 3) em ordem decrescente
+                    columnDefs: [{
+                        orderable: false,
+                        targets: 0
+                    }] // Desabilitar ordenação na coluna de ações (primeira coluna)
+                });
+            }
+
+            // Inicializar tabela de vídeos se existir
+            if ($('#videosTable').length) {
+                videosTable = $('#videosTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+                    },
+                    pageLength: 10,
+                    ordering: true,
+                    searching: true,
+                    info: true,
+                    lengthMenu: [
+                        [5, 10, 25, 50, -1],
+                        [5, 10, 25, 50, "Todos"]
+                    ],
+                    order: [
+                        [3, 'desc']
+                    ] // Ordenar pela coluna de Data (índice 3) em ordem decrescente
+                });
+            }
+
+            // Inicializar tabela de fiscalizações/projetos se existir
+            if ($('#projetosTable').length) {
+                projetosTable = $('#projetosTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json'
+                    },
+                    pageLength: 10,
+                    ordering: true,
+                    searching: true,
+                    info: true,
+                    lengthMenu: [
+                        [5, 10, 25, 50, -1],
+                        [5, 10, 25, 50, "Todos"]
+                    ],
+                    order: [
+                        [3, 'desc']
+                    ] // Ordenar pela coluna de Data (índice 3) em ordem decrescente
+                });
+            }
+
+            // Redesenhar tabelas quando as abas forem trocadas
+            // Isso corrige problemas de paginação em abas ocultas
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+                // Pequeno delay para garantir que a aba foi totalmente renderizada
+                setTimeout(function() {
+                    // Redesenhar a tabela de vídeos quando a aba for mostrada
+                    if (e.target.id === 'videos-tab' && videosTable) {
+                        videosTable.columns.adjust().draw();
+                    }
+                    // Redesenhar a tabela de fiscalizações quando a aba for mostrada
+                    if (e.target.id === 'fiscalizacoes-tab' && projetosTable) {
+                        projetosTable.columns.adjust().draw();
+                    }
+                }, 10);
+            });
+        });
+
         // Funções de Loading
         function showLoading(message = 'Carregando...') {
             document.getElementById('loadingText').textContent = message;
@@ -1103,25 +1301,25 @@ if (isset($_GET['logout'])) {
             }
 
             fetch('upload_documento.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-                if (data.success) {
-                    alert('Documentos enviados com sucesso!');
-                    showLoading('Recarregando página...');
-                    location.reload();
-                } else {
-                    alert('Erro ao enviar documentos: ' + data.message);
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Erro:', error);
-                alert('Erro ao enviar documentos.');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        alert('Documentos enviados com sucesso!');
+                        showLoading('Recarregando página...');
+                        location.reload();
+                    } else {
+                        alert('Erro ao enviar documentos: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Erro:', error);
+                    alert('Erro ao enviar documentos.');
+                });
         }
 
         function deletarDocumento(nome) {
@@ -1138,25 +1336,25 @@ if (isset($_GET['logout'])) {
             formData.append('nome_arquivo', nome);
 
             fetch('deletar_documento.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-                if (data.success) {
-                    alert('Documento deletado com sucesso!');
-                    showLoading('Recarregando página...');
-                    location.reload();
-                } else {
-                    alert('Erro ao deletar documento: ' + data.message);
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Erro:', error);
-                alert('Erro ao deletar documento.');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        alert('Documento deletado com sucesso!');
+                        showLoading('Recarregando página...');
+                        location.reload();
+                    } else {
+                        alert('Erro ao deletar documento: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Erro:', error);
+                    alert('Erro ao deletar documento.');
+                });
         }
 
         function abrirModalAlteracao() {
@@ -1166,7 +1364,7 @@ if (isset($_GET['logout'])) {
 
         function baixarTodosDocumentos() {
             showLoading('Preparando download...');
-            
+
             // Criar link temporário para download
             const link = document.createElement('a');
             link.href = 'baixar_todos_documentos.php?obra_id=<?= $obra_id ?>&cidade=<?= urlencode($obra['cidade']) ?>';
@@ -1174,7 +1372,7 @@ if (isset($_GET['logout'])) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             // Esconder loading após 2 segundos (tempo para o download iniciar)
             setTimeout(function() {
                 hideLoading();
@@ -1185,10 +1383,10 @@ if (isset($_GET['logout'])) {
             const dadosExpandiveis = document.getElementById('dadosExpandiveis');
             const puxadorGaveta = document.getElementById('puxadorGaveta');
             const iconExpandir = document.getElementById('iconExpandir');
-            
+
             // Verificar se está expandido pela classe, não pelo display
             const isExpanded = puxadorGaveta.classList.contains('expanded');
-            
+
             if (!isExpanded) {
                 // Expandir
                 dadosExpandiveis.style.display = 'block';
@@ -1207,11 +1405,11 @@ if (isset($_GET['logout'])) {
                 puxadorGaveta.classList.remove('expanded');
                 iconExpandir.classList.remove('fa-chevron-up');
                 iconExpandir.classList.add('fa-chevron-down');
-                
+
                 // Scroll suave para o topo do card ao recolher
-                document.querySelector('.dados-card').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
+                document.querySelector('.dados-card').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
         }
@@ -1234,10 +1432,12 @@ if (isset($_GET['logout'])) {
         });
     </script>
 </body>
+
 </html>
 
 <?php
-function formatBytes($bytes, $precision = 2) {
+function formatBytes($bytes, $precision = 2)
+{
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
     $bytes = max($bytes, 0);
     $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
@@ -1246,4 +1446,3 @@ function formatBytes($bytes, $precision = 2) {
     return round($bytes, $precision) . ' ' . $units[$pow];
 }
 ?>
-

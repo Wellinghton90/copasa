@@ -3,7 +3,7 @@
 //Dados de conexão com servidor local
 $host = "localhost";
 $user = "user_copasa";
-$password = "@uT0m4#*C0p@5a";
+$password = "@uT0m4#*Cop@5a";
 $database = "copasa";
 
 try {
