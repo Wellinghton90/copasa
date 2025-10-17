@@ -153,9 +153,6 @@ try {
                 <a href="obra_detalhes.php?id=' . $obra['id'] . '" class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
                     <i class="fas fa-eye"></i>
                 </a>
-                <button type="button" class="btn btn-sm btn-outline-warning" onclick="editarObra(' . $obra['id'] . ')" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirObra(' . $obra['id'] . ')" title="Excluir">
                     <i class="fas fa-trash"></i>
                 </button>

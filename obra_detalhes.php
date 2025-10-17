@@ -1150,10 +1150,8 @@ if (isset($_GET['logout'])) {
                                         </td>
                                         <td>
 
-                                            <a target="_blank" href="desenhos_detalhes.php?projeto=<?= urlencode($obra['cidade']) ?>&cords=<?= urlencode($obra['latitude']) ?>&lng=<?= urlencode($obra['longitude']) ?>&cidade=<?= urlencode($projeto['nome']) ?>/3_dsm_ortho/2_mosaic/google_tiles/<?= urlencode($projeto['nome']) ?>_mosaic.html" class="btn btn-sm btn-outline-info">
-
-                                                <!--<a target="_blank" href="ortofoto.php?projeto= ?= //urlencode($projeto['nome']) ?>" class="btn btn-sm btn-outline-info">-->
-                                                <i class="fas fa-map me-2"></i>
+                                            <a target="_blank" href="desenhos_detalhes.php?id=<?= urlencode($obra_id) ?>&cidade=<?= urlencode($obra['cidade']) ?>&lat=<?= urlencode($obra['latitude']) ?>&lng=<?= urlencode($obra['longitude']) ?>&projeto=<?= urlencode($projeto['nome']) ?>/3_dsm_ortho/2_mosaic/google_tiles" class="btn btn-sm btn-outline-info">
+                                               <i class="fas fa-map me-2"></i>
                                                 Ortofoto
                                             </a>
                                         </td>
