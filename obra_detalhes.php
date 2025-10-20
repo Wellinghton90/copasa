@@ -1091,7 +1091,7 @@ if (isset($_GET['logout'])) {
                                 <?php foreach ($videos as $video): ?>
                                     <tr>
                                         <td>
-                                            <a href="<?= htmlspecialchars($video['caminho_relativo']) ?>" target="_blank">
+                                            <a href="video_ia.php?video=<?= urlencode($video['caminho_relativo']) ?>" target="_blank">
                                                 <i class="fas fa-play-circle me-2"></i>
                                                 <?= htmlspecialchars($video['nome']) ?>
                                             </a>
