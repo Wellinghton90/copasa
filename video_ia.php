@@ -1006,43 +1006,43 @@ function formatBytes($bytes, $precision = 2)
 
             <!-- Wrapper para Mapa e Análises IA -->
             <div id="sidePanelsWrapper">
-                <!-- Minimapa Panel -->
-                <div id="mapContainer">
-                    <div class="controls-section">
-                        <?php if (!empty($frames_data)): ?>
-                            <!-- Minimapa -->
-                            <div id="minimapa"></div>
-                        <?php else: ?>
-                            <div class="no-frames-message">
-                                <i class="fas fa-images"></i>
-                                <h5>Nenhum frame disponível</h5>
-                                <p>Não foram encontrados frames para este vídeo.</p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+            <!-- Minimapa Panel -->
+            <div id="mapContainer">
+                <div class="controls-section">
+                    <?php if (!empty($frames_data)): ?>
+                        <!-- Minimapa -->
+                        <div id="minimapa"></div>
+                    <?php else: ?>
+                        <div class="no-frames-message">
+                            <i class="fas fa-images"></i>
+                            <h5>Nenhum frame disponível</h5>
+                            <p>Não foram encontrados frames para este vídeo.</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
+            </div>
 
                 <!-- Splitter -->
                 <div id="splitter" class="splitter">
                     <div class="splitter-handle">
                         <i class="fas fa-grip-vertical"></i>
-                    </div>
                 </div>
+            </div>
 
-                <!-- Container de Análises IA -->
-                <div id="iaContainer">
-                    <div class="controls-section" style="color: var(--text-light);">
-                        <h3>
-                            <i class="fas fa-lightbulb"></i>
-                            Análises da IA
-                        </h3>
-                        
-                        <!-- Lista de análises -->
-                        <div id="analises-ia-list">
-                            <!-- As análises serão adicionadas aqui dinamicamente -->
-                            <div class="text-center" style="padding: 40px 20px; font-size: 0.9rem;">
-                                <i class="fas fa-robot" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
-                                <p>Clique em um frame e analise com IA</p>
+            <!-- Container de Análises IA -->
+            <div id="iaContainer">
+                <div class="controls-section" style="color: var(--text-light);">
+                    <h3>
+                        <i class="fas fa-lightbulb"></i>
+                        Análises da IA
+                    </h3>
+                    
+                    <!-- Lista de análises -->
+                    <div id="analises-ia-list">
+                        <!-- As análises serão adicionadas aqui dinamicamente -->
+                        <div class="text-center" style="padding: 40px 20px; font-size: 0.9rem;">
+                            <i class="fas fa-robot" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                            <p>Clique em um frame e analise com IA</p>
                             </div>
                         </div>
                     </div>
@@ -1519,7 +1519,7 @@ function formatBytes($bytes, $precision = 2)
                     <i class="fas fa-cog fa-spin" style="font-size: 2rem; margin-bottom: 15px; color: var(--primary-color);"></i>
                     <p style="color: var(--text-light); font-weight: 600;">Analisando Frame: ${nomeSemExtensao}</p>
                     <p style="color: rgba(227, 242, 253, 0.7); font-size: 0.9rem;">A IA está processando a imagem...</p>
-                </div>
+                    </div>
             `;
         }
 
@@ -1642,27 +1642,27 @@ function formatBytes($bytes, $precision = 2)
                 success: function(exists) {
                     if (exists === 'true') {
                         // Carregar e mostrar análise
-                        $.ajax({
-                            url: 'carregar_analise_json.php',
-                            method: 'POST',
-                            data: {
-                                json_filename: jsonFileName,
-                                frames_path: framesPath
-                            },
-                            success: function(response) {
-                                try {
-                                    const analiseData = typeof response === 'string' ? JSON.parse(response) : response;
-                                    mostrarResultadoAnalise(analiseData, frameName);
-                                } catch (error) {
-                                    console.error('Erro ao processar análise:', error);
+                    $.ajax({
+                        url: 'carregar_analise_json.php',
+                        method: 'POST',
+                        data: {
+                            json_filename: jsonFileName,
+                            frames_path: framesPath
+                        },
+                        success: function(response) {
+                            try {
+                                const analiseData = typeof response === 'string' ? JSON.parse(response) : response;
+                                mostrarResultadoAnalise(analiseData, frameName);
+                            } catch (error) {
+                                console.error('Erro ao processar análise:', error);
                                     mostrarBotaoAnalisar(frameName);
-                                }
-                            },
-                            error: function(xhr, status, error) {
+                            }
+                        },
+                        error: function(xhr, status, error) {
                                 mostrarBotaoAnalisar(frameName);
                             }
                         });
-                    } else {
+                            } else {
                         // Mostrar botão para analisar
                         mostrarBotaoAnalisar(frameName);
                     }
@@ -1704,82 +1704,217 @@ function formatBytes($bytes, $precision = 2)
             listaAnalises.innerHTML = accordionContent;
         }
 
-        // Função para criar conteúdo do accordion
+        // Contador global para IDs únicos
+        let accordionIdCounter = 0;
+
+        // Função para gerar ID único
+        function gerarIdUnico() {
+            return `accordion_${++accordionIdCounter}_${Date.now()}`;
+        }
+
+        // Função para criar conteúdo do accordion dinamicamente
         function criarAccordionContent(data) {
+            accordionIdCounter = 0; // Reset counter
             let accordionHTML = `
                 <div class="accordion analise-accordion" id="analiseAccordion">
             `;
 
-            // Seção 1: Contexto Geral
-            if (data.contexto_geral) {
-                accordionHTML += `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contextoGeral">
-                                <strong>Contexto Geral da Obra</strong>
-                            </button>
-                        </h2>
-                        <div id="contextoGeral" class="accordion-collapse collapse" data-bs-parent="#analiseAccordion">
-                            <div class="accordion-body">
-                                ${criarConteudoContexto(data.contexto_geral)}
+            // Criar accordion dinamicamente baseado nas chaves do objeto
+            Object.keys(data).forEach((key, index) => {
+                if (data[key] && typeof data[key] === 'object') {
+                    let sectionId = `section${index}`;
+                    let sectionTitle = formatarTitulo(key);
+                    
+                    // Tratamento especial para respostas analíticas ou questões analíticas
+                    if (Array.isArray(data[key]) && (key === 'respostas_analiticas' || key === 'questoes_analiticas')) {
+                        sectionTitle = `Questões Analíticas (${data[key].length} questões)`;
+                    }
+                    
+                    accordionHTML += `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${sectionId}">
+                                    <strong>${sectionTitle}</strong>
+                                </button>
+                            </h2>
+                            <div id="${sectionId}" class="accordion-collapse collapse" data-bs-parent="#analiseAccordion">
+                                <div class="accordion-body">
+                                    ${criarConteudoDinamico(key, data[key], sectionId)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
             }
-
-            // Seção 2: Respostas Analíticas
-            if (data.respostas_analiticas && Array.isArray(data.respostas_analiticas)) {
-                accordionHTML += `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#questoesAnaliticas">
-                                <strong>Análise Analítica (${data.respostas_analiticas.length} questões)</strong>
-                            </button>
-                        </h2>
-                        <div id="questoesAnaliticas" class="accordion-collapse collapse" data-bs-parent="#analiseAccordion">
-                            <div class="accordion-body">
-                                ${criarConteudoQuestoesAnaliticas(data.respostas_analiticas)}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Seção 3: Avaliação Global
-            if (data.avaliacao_global) {
-                accordionHTML += `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#avaliacaoGlobal">
-                                <strong>Avaliação Global</strong>
-                            </button>
-                        </h2>
-                        <div id="avaliacaoGlobal" class="accordion-collapse collapse" data-bs-parent="#analiseAccordion">
-                            <div class="accordion-body">
-                                ${criarConteudoAvaliacao(data.avaliacao_global)}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
+            });
 
             accordionHTML += '</div>';
             return accordionHTML;
         }
 
+        // Função auxiliar para formatar títulos das seções
+        function formatarTitulo(key) {
+            return key.replace(/_/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase())
+                    .replace('Analiticas', 'Analíticas');
+        }
+
+        // Função para criar conteúdo dinamicamente baseado no tipo de dados
+        function criarConteudoDinamico(key, data, sectionId = '') {
+            // Se é array de respostas analíticas ou questões analíticas
+            if (Array.isArray(data) && (key === 'respostas_analiticas' || key === 'questoes_analiticas')) {
+                return criarConteudoQuestoesAnaliticas(data);
+            }
+            
+            // Se é avaliação global
+            if (key === 'avaliacao_global') {
+                return criarConteudoAvaliacao(data);
+            }
+            
+            // Para outros objetos, renderizar como chave-valor
+            return criarConteudoObjeto(key, data, sectionId);
+        }
+
+        // Função para criar conteúdo de objetos genéricos
+        function criarConteudoObjeto(key, obj, sectionId = '') {
+            if (typeof obj === 'object' && obj !== null) {
+                // Usar o novo sistema de renderização com sub-collapses
+                return renderizarObjeto(obj, 0, sectionId);
+            } else {
+                // Se é um valor primitivo
+                return `<div class="alert alert-info"><strong>${formatarTitulo(key)}:</strong> ${obj}</div>`;
+            }
+        }
+
+        // Função auxiliar para renderizar objetos
+        function renderizarObjeto(obj, nivel = 0, parentId = '') {
+            if (nivel > 2) return JSON.stringify(obj, null, 2);
+            
+            let html = '<div>';
+            let hasArrays = false;
+            
+            // Primeiro, mostrar propriedades simples (não arrays nem objetos complexos)
+            Object.keys(obj).forEach(chave => {
+                let valor = obj[chave];
+                if (typeof valor !== 'object' || valor === null || (Array.isArray(valor) && valor.length === 0)) {
+                    let labelChave = chave.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    html += `
+                        <div class="mb-2">
+                            <strong class="text-primary">${labelChave}:</strong> ${formatarValorSimples(valor)}
+                        </div>
+                    `;
+                } else if (Array.isArray(valor) || (typeof valor === 'object' && Object.keys(valor).length > 1)) {
+                    hasArrays = true;
+                }
+            });
+            
+            // Depois, tratar arrays e objetos complexos
+            if (hasArrays) {
+                html += '<div class="mt-3">';
+                Object.keys(obj).forEach(chave => {
+                    let valor = obj[chave];
+                    if ((Array.isArray(valor) && valor.length > 0) || (typeof valor === 'object' && valor !== null && Object.keys(valor).length > 1)) {
+                        let labelChave = chave.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        
+                        // Se é array de objetos, renderizar diretamente sem sub-collapse
+                        if (Array.isArray(valor) && valor.length > 0 && typeof valor[0] === 'object') {
+                            html += `
+                                <div class="mb-4">
+                                    <div class="border rounded p-3">
+                                        <h6 class="text-secondary mb-3">${labelChave}</h6>
+                                        ${formatarValorCompleto(valor, nivel, parentId)}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            // Para outros casos, criar sub-collapse como antes
+                            let subCollapseId = `${parentId}_${chave}_${gerarIdUnico()}`;
+                            html += `
+                                <div class="accordion-item mb-2">
+                        <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${subCollapseId}">
+                                            <small>${labelChave}</small>
+                            </button>
+                        </h2>
+                                    <div id="${subCollapseId}" class="accordion-collapse collapse">
+                                        <div class="accordion-body p-2">
+                                            ${formatarValorCompleto(valor, nivel + 1, subCollapseId)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                        }
+                    }
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Função auxiliar para formatar valores simples (não objetos complexos)
+        function formatarValorSimples(valor) {
+            if (typeof valor === 'boolean') {
+                return valor ? 
+                    '<span class="badge bg-success">Sim</span>' : 
+                    '<span class="badge bg-danger">Não</span>';
+            }
+            
+            if (valor === null || valor === undefined) {
+                return '<em class="text-muted">Não informado</em>';
+            }
+            
+            if (valor === '') {
+                return '<em class="text-muted">Vazio</em>';
+            }
+            
+            return valor;
+        }
+
+        // Função auxiliar para formatar valores completos (incluindo arrays e objetos)
+        function formatarValorCompleto(valor, nivel = 0, parentId = '') {
+                if (Array.isArray(valor)) {
+                if (valor.length === 0) return '<em class="text-muted">Lista vazia</em>';
+                
+                // Se é array de objetos, renderizar cada objeto diretamente
+                if (valor.length > 0 && typeof valor[0] === 'object') {
+                    return valor.map((item, index) => {
+                        let itemId = `${parentId}_item_${index}_${gerarIdUnico()}`;
+                        return `
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                ${renderizarObjeto(item, nivel, itemId)}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    // Array simples - mostrar como lista
+                    return '<ul class="list-group list-group-flush">' + 
+                           valor.map(v => `<li class="list-group-item py-1 px-2">${formatarValorSimples(v)}</li>`).join('') + 
+                           '</ul>';
+                }
+            }
+            
+            // Objeto - renderizar diretamente
+            return renderizarObjeto(valor, nivel, parentId);
+        }
+
+        // Função auxiliar para formatar valores (mantida para compatibilidade)
+        function formatarValor(valor, nivel = 0) {
+            return formatarValorCompleto(valor, nivel);
+        }
+
         // Função para criar conteúdo do contexto geral
         function criarConteudoContexto(contexto) {
-            let conteudo = '<div class="row">';
+            let conteudo = '<div>';
             
             Object.keys(contexto).forEach(chave => {
                 let valor = contexto[chave];
                 let labelChave = chave.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 
                 conteudo += `
-                    <div class="col-md-6 mb-3">
-                        <div class="d-flex">
-                            <strong class="me-2">${labelChave}:</strong>
+                    <div class="mb-3">
+                        <div class="d-flex flex-column">
+                            <strong class="text-primary mb-1">${labelChave}:</strong>
                             <span>${valor}</span>
                         </div>
                     </div>
@@ -1792,52 +1927,29 @@ function formatBytes($bytes, $precision = 2)
 
         // Função para criar conteúdo das respostas analíticas
         function criarConteudoQuestoesAnaliticas(respostasAnaliticas) {
-            let conteudo = `
-                <div class="accordion accordion-flush" id="questoesFlush">
-                    <div class="text-muted small mb-3">
-                        <i class="fas fa-info-circle"></i> 
-                        Clique em cada pergunta para ver a resposta detalhada
-                    </div>
-            `;
+            let conteudo = '';
             
             respostasAnaliticas.forEach((item, index) => {
-                const accordionId = `pergunta${item.id_pergunta}`;
                 const confianca = item.resposta.toLowerCase().includes('confiança: alta') ? 'success' : 
                                  item.resposta.toLowerCase().includes('confiança: média') ? 'warning' : 
                                  item.resposta.toLowerCase().includes('confiança: baixa') ? 'danger' : 'secondary';
                 
                 conteudo += `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${accordionId}">
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <span class="me-2">
-                                        <strong>Q${item.id_pergunta}:</strong> ${item.pergunta.substring(0, 60)}${item.pergunta.length > 60 ? '...' : ''}
-                                    </span>
-                                    <span class="badge bg-${confianca} ms-2">
-                                        <i class="fas fa-circle me-1"></i>
-                                        ${confianca === 'success' ? 'Alta' : confianca === 'warning' ? 'Média' : confianca === 'danger' ? 'Baixa' : 'N/A'}
-                                    </span>
-                                </div>
-                            </button>
-                        </h2>
-                        <div id="${accordionId}" class="accordion-collapse collapse" data-bs-parent="#questoesFlush">
-                            <div class="accordion-body">
-                                <div class="mb-2">
-                                    <strong>Pergunta:</strong>
-                                    <p class="mb-3 mt-1">${item.pergunta}</p>
-                                </div>
-                                <div>
-                                    <strong>Resposta:</strong>
-                                    <p class="mb-1 mt-1">${item.resposta}</p>
-                                </div>
-                            </div>
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="text-primary mb-1 flex-grow-1">
+                                <strong>${item.id_pergunta}.</strong> ${item.pergunta}
+                            </h6>
+                            <span class="badge bg-${confianca} ms-2">
+                                <i class="fas fa-circle me-1"></i>
+                                ${confianca === 'success' ? 'Alta' : confianca === 'warning' ? 'Média' : confianca === 'danger' ? 'Baixa' : 'N/A'}
+                            </span>
                         </div>
+                        <p class="mb-0">${item.resposta}</p>
                     </div>
                 `;
             });
             
-            conteudo += '</div>';
             return conteudo;
         }
 
@@ -1936,9 +2048,9 @@ function formatBytes($bytes, $precision = 2)
                         if (exists === 'true') {
                             // Marcar frame como analisado
                             frameItem.classList.add('frame-analisado');
-                        }
-                    }
-                });
+                                    }
+                                }
+                            });
             });
             
             // Configurar análise inicial do primeiro frame ativo ou disponível
