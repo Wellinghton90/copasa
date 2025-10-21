@@ -666,6 +666,7 @@ if (isset($_GET['logout'])) {
             padding: 20px 15px;
             border-bottom: 2px solid rgba(0, 188, 212, 0.2);
             cursor: pointer;
+            text-align: center;
         }
 
         .table thead th.sorting,
@@ -694,6 +695,7 @@ if (isset($_GET['logout'])) {
             padding: 20px 15px;
             vertical-align: middle;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
         }
 
         /* Configurações de alinhamento são controladas pelo DataTables com className específicas */
@@ -1215,30 +1217,40 @@ if (isset($_GET['logout'])) {
                         <table class="table" id="videosTable">
                             <thead>
                                 <tr>
-                                    <th>Nome do Vídeo</th>
-                                    <th style="width: 120px;">Formato</th>
-                                    <th style="width: 120px;">Tamanho</th>
-                                    <th style="width: 100px;">Frames</th>
-                                    <th style="width: 100px;">Analisado</th>
+                                    <th style="width: 80px;">Ação</th>
+                                    <th style="width: 150px;">Data</th>
+                                    <th>Nome</th>
+                                    <th style="width: 100px;">Duração</th>
                                     <th style="width: 100px;">Latitude</th>
                                     <th style="width: 100px;">Longitude</th>
-                                    <th style="width: 100px;">Duração</th>
-                                    <th style="width: 150px;">Data</th>
+                                    <th style="width: 100px;">Frames</th>
+                                    <th style="width: 100px;">Analisado</th>
+                                    <th style="width: 120px; display: none;">Formato</th>
+                                    <th style="width: 120px; display: none;">Tamanho</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($videos as $video): ?>
                                     <tr>
                                         <td>
-                                            <a href="video_ia.php?video=<?= urlencode($video['caminho_relativo']) ?>" target="_blank">
-                                                <i class="fas fa-play-circle me-2"></i>
-                                                <?= htmlspecialchars($video['nome']) ?>
+                                            <a href="ver_video.php?video=<?= urlencode($video['nome']) ?>&cidade=<?= urlencode($obra['cidade']) ?>" class="btn btn-primary btn-sm" target="_blank" title="Ver no mapa">
+                                                <i class="fas fa-globe"></i>
                                             </a>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info"><?= strtoupper($video['extensao']) ?></span>
+                                            <a style="color: blue;" href="video_ia.php?video=<?= urlencode($video['caminho_relativo']) ?>" target="_blank">
+                                                <?= htmlspecialchars($video['data']) ?>
+                                            </a>
                                         </td>
-                                        <td data-order="<?= $video['tamanho'] ?>"><?= formatBytes($video['tamanho']) ?></td>
+                                        <td>
+                                            <a style="color: blue;" href="video_ia.php?video=<?= urlencode($video['caminho_relativo']) ?>" target="_blank">
+                                                <i style="color: #0a1929;" class="fas fa-play-circle me-2"></i>
+                                                <?= htmlspecialchars($video['nome']) ?>
+                                            </a>
+                                        </td>
+                                        <td><?= $video['duracao'] ?></td>
+                                        <td><?= $video['latitude'] ?></td>
+                                        <td><?= $video['longitude'] ?></td>
                                         <td data-order="<?= $video['frames'] ?>">
                                             <span class="badge <?= $video['frames'] > 0 ? 'bg-success' : 'bg-secondary' ?>">
                                                 <?= $video['frames'] ?>
@@ -1249,10 +1261,10 @@ if (isset($_GET['logout'])) {
                                                 <?= $video['analisado'] ? 'SIM' : 'NÃO' ?>
                                             </span>
                                         </td>
-                                        <td><?= $video['latitude'] ?></td>
-                                        <td><?= $video['longitude'] ?></td>
-                                        <td><?= $video['duracao'] ?></td>
-                                        <td><?= $video['data'] ?></td>
+                                        <td style="display: none;">
+                                            <span class="badge bg-info"><?= strtoupper($video['extensao']) ?></span>
+                                        </td>
+                                        <td data-order="<?= $video['tamanho'] ?>" style="display: none;"><?= formatBytes($video['tamanho']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -1419,47 +1431,18 @@ if (isset($_GET['logout'])) {
                         [5, 10, 25, 50, "Todos"]
                     ],
                     order: [
-                        [8, 'desc']
-                    ], // Ordenar pela coluna de Data (índice 8) em ordem decrescente
+                        [1, 'desc']
+                    ], // Ordenar pela coluna de Data (índice 1) em ordem decrescente
                     columnDefs: [
                         {
-                            targets: 0, // Coluna de Nome do Vídeo (índice 0) - alinhar à esquerda
-                            className: 'text-start'
-                        },
-                        {
-                            targets: 1, // Coluna de Formato (índice 1)
-                            className: 'text-center'
-                        },
-                        {
-                            type: 'num',
-                            targets: 2, // Coluna de Tamanho (índice 2) - usará o atributo data-order automaticamente
-                            className: 'text-center'
-                        },
-                        {
-                            type: 'num',
-                            targets: 3, // Coluna de Frames (índice 3) - usará o atributo data-order automaticamente
-                            className: 'text-center'
-                        },
-                        {
-                            targets: 4, // Coluna de Analisado (índice 4)
-                            className: 'text-center'
-                        },
-                        {
-                            targets: 5, // Coluna de Latitude (índice 5)
-                            className: 'text-center'
-                        },
-                        {
-                            targets: 6, // Coluna de Longitude (índice 6)
-                            className: 'text-center'
-                        },
-                        {
-                            targets: 7, // Coluna de Duração (índice 7)
+                            orderable: false,
+                            targets: 0, // Coluna de Ação (índice 0) - não ordenável
                             className: 'text-center'
                         },
                         {
                             type: 'date',
-                            targets: 8, // Coluna de Data (índice 8)
-                            className: 'text-center',
+                            targets: 1, // Coluna de Data (índice 1)
+                            className: 'text-start',
                             render: function(data, type, row) {
                                 if (type === 'sort' || type === 'type') {
                                     // Converter data brasileira (DD/MM/YYYY HH:MM) para formato sortável (YYYY-MM-DD HH:MM)
@@ -1486,6 +1469,42 @@ if (isset($_GET['logout'])) {
                                 }
                                 return data; // Retornar dados originais para display
                             }
+                        },
+                        {
+                            targets: 2, // Coluna de Nome (índice 2) - alinhar à esquerda
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 3, // Coluna de Duração (índice 3)
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 4, // Coluna de Latitude (índice 4)
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 5, // Coluna de Longitude (índice 5)
+                            className: 'text-start'
+                        },
+                        {
+                            type: 'num',
+                            targets: 6, // Coluna de Frames (índice 6) - usará o atributo data-order automaticamente
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 7, // Coluna de Analisado (índice 7)
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 8, // Coluna de Formato (índice 8) - oculta
+                            className: 'text-start',
+                            visible: false
+                        },
+                        {
+                            type: 'num',
+                            targets: 9, // Coluna de Tamanho (índice 9) - oculta
+                            className: 'text-start',
+                            visible: false
                         }
                     ]
                 });
