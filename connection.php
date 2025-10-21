@@ -13,3 +13,6 @@ try {
 } catch (PDOException $e) {
   echo 'ERROR: ' . $e->getMessage();
 }
+
+// Configurar fuso horário para Brasília (UTC-3)
+date_default_timezone_set('America/Sao_Paulo');

@@ -975,7 +975,7 @@ function formatBytes($bytes, $precision = 2)
         <div class="container">
             <a class="navbar-brand" href="#" style="cursor: default;">
                 <i class="fas fa-video"></i>
-                Visualizador de Vídeo com IA
+                Visualizador de Vídeo com IA - <?php echo htmlspecialchars($video_nome_sem_extensao) ?>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

@@ -68,8 +68,89 @@ if (!file_exists($videos_path)) {
     mkdir($videos_path, 0755, true);
 }
 
+// Função para carregar metadados dos vídeos do arquivo JSON
+function loadVideoMetadata($cidade) {
+    $metadataPath = "evidencias/{$cidade}/Videos/metadados.json";
+    
+    if (!file_exists($metadataPath)) {
+        return [];
+    }
+    
+    $jsonContent = file_get_contents($metadataPath);
+    if ($jsonContent === false) {
+        return [];
+    }
+    
+    $metadata = json_decode($jsonContent, true);
+    return $metadata ?: [];
+}
+
+// Função para contar quantos frames existem para um vídeo
+function contarFrames($nomeVideo, $cidade) {
+    $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
+    $framesPath = "evidencias/{$cidade}/frames/{$nomeVideoSemExtensao}(frames)";
+    
+    if (!is_dir($framesPath)) {
+        return 0;
+    }
+    
+    // Contar arquivos de imagem (JPG, JPEG)
+    $files = scandir($framesPath);
+    $contador = 0;
+    
+    foreach ($files as $file) {
+        if ($file != '.' && $file != '..') {
+            $extensao = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if ($extensao === 'jpg' || $extensao === 'jpeg') {
+                $contador++;
+            }
+        }
+    }
+    
+    return $contador;
+}
+
+// Função para verificar se existem frames para um vídeo (manter compatibilidade)
+function verificarFrames($nomeVideo, $cidade) {
+    return contarFrames($nomeVideo, $cidade) > 0;
+}
+
+// Função para verificar se um vídeo está analisado
+function verificarAnalisado($nomeVideo, $cidade) {
+    // Se tiver 0 frames, automaticamente não está analisado
+    $quantidadeFrames = contarFrames($nomeVideo, $cidade);
+    if ($quantidadeFrames === 0) {
+        return false;
+    }
+    
+    $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
+    $framesPath = "evidencias/{$cidade}/frames/{$nomeVideoSemExtensao}(frames)";
+    
+    if (!is_dir($framesPath)) {
+        return false;
+    }
+    
+    // Buscar por arquivos JPG e verificar se existe JSON correspondente
+    $files = scandir($framesPath);
+    foreach ($files as $file) {
+        if ($file != '.' && $file != '..') {
+            $extensao = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if ($extensao === 'jpg' || $extensao === 'jpeg') {
+                $nomeArquivo = pathinfo($file, PATHINFO_FILENAME);
+                $jsonFile = $framesPath . '/' . $nomeArquivo . '.json';
+                
+                if (file_exists($jsonFile)) {
+                    return true; // Encontrou pelo menos um conjunto JPG + JSON
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
 // Função para listar vídeos recursivamente
-function listarVideos($dir)
+function listarVideos($dir, $cidade)
 {
     $videos = [];
     $extensoes_video = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', 'mpeg', 'mpg'];
@@ -77,6 +158,9 @@ function listarVideos($dir)
     if (!is_dir($dir)) {
         return $videos;
     }
+
+    // Carregar metadados do JSON uma única vez
+    $videoMetadata = loadVideoMetadata($cidade);
 
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
@@ -87,13 +171,61 @@ function listarVideos($dir)
         if ($file->isFile()) {
             $extensao = strtolower($file->getExtension());
             if (in_array($extensao, $extensoes_video)) {
+                $nomeVideo = $file->getFilename();
+                
+                // Buscar dados do vídeo no JSON
+                $metadataVideos = $videoMetadata[$nomeVideo] ?? [];
+                
+                // Extrair dados do JSON ou usar valores padrão
+                $tamanhoBytes = $metadataVideos['tamanho'] ?? $file->getSize();
+                $dataExibicao = 'S/D';
+                $latitude = 'S/D';
+                $longitude = 'S/D';
+                $duracao = 'S/D';
+                
+                // Processar data do JSON
+                if (!empty($metadataVideos['data'])) {
+                    try {
+                        $dataObj = new DateTime($metadataVideos['data']);
+                        $dataExibicao = $dataObj->format('d/m/Y H:i');
+                    } catch (Exception $e) {
+                        $dataExibicao = date('d/m/Y H:i', $file->getMTime());
+                    }
+                } else {
+                    $dataExibicao = date('d/m/Y H:i', $file->getMTime());
+                }
+                
+                // Extrair latitude e longitude do JSON
+                if (isset($metadataVideos['latitude']) && $metadataVideos['latitude'] !== null) {
+                    $latitude = $metadataVideos['latitude'];
+                }
+                if (isset($metadataVideos['longitude']) && $metadataVideos['longitude'] !== null) {
+                    $longitude = $metadataVideos['longitude'];
+                }
+                
+                // Extrair duração do JSON
+                if (!empty($metadataVideos['tempo'])) {
+                    $duracao = $metadataVideos['tempo'];
+                }
+                
+                // Verificar quantidade de frames e se está analisado
+                $quantidadeFrames = contarFrames($nomeVideo, $cidade);
+                $analisado = verificarAnalisado($nomeVideo, $cidade);
+                
                 $videos[] = [
-                    'nome' => $file->getFilename(),
+                    'nome' => $nomeVideo,
                     'caminho' => $file->getPathname(),
                     'caminho_relativo' => str_replace('\\', '/', $file->getPathname()),
-                    'tamanho' => $file->getSize(),
-                    'data' => date('d/m/Y H:i', $file->getMTime()),
-                    'extensao' => $extensao
+                    'tamanho' => $tamanhoBytes,
+                    'data' => $dataExibicao,
+                    'extensao' => $extensao,
+                    'data_arquivo' => date('d/m/Y H:i', $file->getMTime()), // Manter data do arquivo para referência
+                    'data_metadata' => !empty($metadataVideos['data']) ? $metadataVideos['data'] : null,
+                    'frames' => $quantidadeFrames,
+                    'analisado' => $analisado,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'duracao' => $duracao
                 ];
             }
         }
@@ -103,7 +235,7 @@ function listarVideos($dir)
 }
 
 // Listar vídeos
-$videos = listarVideos($videos_path);
+$videos = listarVideos($videos_path, $obra['cidade']);
 
 // Caminho dos projetos (fiscalizações)
 $projetos_path = "projetos/" . $obra['cidade'];
@@ -564,6 +696,8 @@ if (isset($_GET['logout'])) {
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* Configurações de alinhamento são controladas pelo DataTables com className específicas */
+
         .table tbody td a {
             color: var(--dark-bg);
             text-decoration: none;
@@ -997,7 +1131,7 @@ if (isset($_GET['logout'])) {
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="fiscalizacoes-tab" data-bs-toggle="tab" data-bs-target="#fiscalizacoes" type="button" role="tab">
                     <i class="fas fa-clipboard-check me-2"></i>
-                    Fiscalizações
+                    Gêmeos Digitais
                 </button>
             </li>
         </ul>
@@ -1051,7 +1185,7 @@ if (isset($_GET['logout'])) {
                                                 <?= htmlspecialchars($doc['nome']) ?>
                                             </a>
                                         </td>
-                                        <td><?= formatBytes($doc['tamanho']) ?></td>
+                                        <td data-order="<?= $doc['tamanho'] ?>"><?= formatBytes($doc['tamanho']) ?></td>
                                         <td><?= $doc['data'] ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -1084,6 +1218,11 @@ if (isset($_GET['logout'])) {
                                     <th>Nome do Vídeo</th>
                                     <th style="width: 120px;">Formato</th>
                                     <th style="width: 120px;">Tamanho</th>
+                                    <th style="width: 100px;">Frames</th>
+                                    <th style="width: 100px;">Analisado</th>
+                                    <th style="width: 100px;">Latitude</th>
+                                    <th style="width: 100px;">Longitude</th>
+                                    <th style="width: 100px;">Duração</th>
                                     <th style="width: 150px;">Data</th>
                                 </tr>
                             </thead>
@@ -1099,7 +1238,20 @@ if (isset($_GET['logout'])) {
                                         <td>
                                             <span class="badge bg-info"><?= strtoupper($video['extensao']) ?></span>
                                         </td>
-                                        <td><?= formatBytes($video['tamanho']) ?></td>
+                                        <td data-order="<?= $video['tamanho'] ?>"><?= formatBytes($video['tamanho']) ?></td>
+                                        <td data-order="<?= $video['frames'] ?>">
+                                            <span class="badge <?= $video['frames'] > 0 ? 'bg-success' : 'bg-secondary' ?>">
+                                                <?= $video['frames'] ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge <?= $video['analisado'] ? 'bg-success' : 'bg-secondary' ?>">
+                                                <?= $video['analisado'] ? 'SIM' : 'NÃO' ?>
+                                            </span>
+                                        </td>
+                                        <td><?= $video['latitude'] ?></td>
+                                        <td><?= $video['longitude'] ?></td>
+                                        <td><?= $video['duracao'] ?></td>
                                         <td><?= $video['data'] ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -1202,10 +1354,53 @@ if (isset($_GET['logout'])) {
                     order: [
                         [3, 'desc']
                     ], // Ordenar pela coluna de Data (índice 3) em ordem decrescente
-                    columnDefs: [{
-                        orderable: false,
-                        targets: 0
-                    }] // Desabilitar ordenação na coluna de ações (primeira coluna)
+                    columnDefs: [
+                        {
+                            orderable: false,
+                            targets: 0,
+                            className: 'text-center'
+                        }, // Desabilitar ordenação na coluna de ações (primeira coluna)
+                        {
+                            targets: 1, // Coluna de Nome do Arquivo (índice 1) - alinhar à esquerda
+                            className: 'text-start'
+                        },
+                        {
+                            type: 'num',
+                            targets: 2, // Coluna de Tamanho (índice 2) - usará o atributo data-order automaticamente
+                            className: 'text-center'
+                        },
+                        {
+                            type: 'date',
+                            targets: 3, // Coluna de Data (índice 3)
+                            className: 'text-center',
+                            render: function(data, type, row) {
+                                if (type === 'sort' || type === 'type') {
+                                    // Converter data brasileira (DD/MM/YYYY HH:MM) para formato sortável (YYYY-MM-DD HH:MM)
+                                    if (data && typeof data === 'string') {
+                                        var parts = data.split(' ');
+                                        if (parts.length === 2) {
+                                            var datePart = parts[0].split('/');
+                                            var timePart = parts[1];
+                                            if (datePart.length === 3) {
+                                                // Validar se são números válidos
+                                                var day = parseInt(datePart[0]);
+                                                var month = parseInt(datePart[1]);
+                                                var year = parseInt(datePart[2]);
+                                                
+                                                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                                                    return year + '-' + 
+                                                           String(month).padStart(2, '0') + '-' + 
+                                                           String(day).padStart(2, '0') + ' ' + 
+                                                           timePart;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return data; // Retornar dados originais para display
+                            }
+                        }
+                    ]
                 });
             }
 
@@ -1224,8 +1419,75 @@ if (isset($_GET['logout'])) {
                         [5, 10, 25, 50, "Todos"]
                     ],
                     order: [
-                        [3, 'desc']
-                    ] // Ordenar pela coluna de Data (índice 3) em ordem decrescente
+                        [8, 'desc']
+                    ], // Ordenar pela coluna de Data (índice 8) em ordem decrescente
+                    columnDefs: [
+                        {
+                            targets: 0, // Coluna de Nome do Vídeo (índice 0) - alinhar à esquerda
+                            className: 'text-start'
+                        },
+                        {
+                            targets: 1, // Coluna de Formato (índice 1)
+                            className: 'text-center'
+                        },
+                        {
+                            type: 'num',
+                            targets: 2, // Coluna de Tamanho (índice 2) - usará o atributo data-order automaticamente
+                            className: 'text-center'
+                        },
+                        {
+                            type: 'num',
+                            targets: 3, // Coluna de Frames (índice 3) - usará o atributo data-order automaticamente
+                            className: 'text-center'
+                        },
+                        {
+                            targets: 4, // Coluna de Analisado (índice 4)
+                            className: 'text-center'
+                        },
+                        {
+                            targets: 5, // Coluna de Latitude (índice 5)
+                            className: 'text-center'
+                        },
+                        {
+                            targets: 6, // Coluna de Longitude (índice 6)
+                            className: 'text-center'
+                        },
+                        {
+                            targets: 7, // Coluna de Duração (índice 7)
+                            className: 'text-center'
+                        },
+                        {
+                            type: 'date',
+                            targets: 8, // Coluna de Data (índice 8)
+                            className: 'text-center',
+                            render: function(data, type, row) {
+                                if (type === 'sort' || type === 'type') {
+                                    // Converter data brasileira (DD/MM/YYYY HH:MM) para formato sortável (YYYY-MM-DD HH:MM)
+                                    if (data && typeof data === 'string') {
+                                        var parts = data.split(' ');
+                                        if (parts.length === 2) {
+                                            var datePart = parts[0].split('/');
+                                            var timePart = parts[1];
+                                            if (datePart.length === 3) {
+                                                // Validar se são números válidos
+                                                var day = parseInt(datePart[0]);
+                                                var month = parseInt(datePart[1]);
+                                                var year = parseInt(datePart[2]);
+                                                
+                                                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                                                    return year + '-' + 
+                                                           String(month).padStart(2, '0') + '-' + 
+                                                           String(day).padStart(2, '0') + ' ' + 
+                                                           timePart;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return data; // Retornar dados originais para display
+                            }
+                        }
+                    ]
                 });
             }
 
