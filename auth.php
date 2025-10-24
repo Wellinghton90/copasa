@@ -40,7 +40,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($usuario && password_verify($senha, $usuario['senha'])) {
                     // Verificar se o usuário está confirmado e habilitado
                     if (!$usuario['confirmado']) {
-                        header('Location: index.php?error=' . urlencode('Sua conta ainda não foi confirmada. Verifique seu email.'));
+                        // Gerar novo token de confirmação e reenviar email
+                        $new_confirmation_token = generateToken();
+                        
+                        try {
+                            // Atualizar token no banco
+                            $stmt = $conn->prepare("UPDATE usuarios SET confirmation_token = ? WHERE id = ?");
+                            $stmt->execute([$new_confirmation_token, $usuario['id']]);
+                            
+                            // Reenviar email de confirmação
+                            if (sendConfirmationEmailAuth($usuario['email'], $usuario['nome'], $new_confirmation_token)) {
+                                header('Location: index.php?error=' . urlencode('Sua conta ainda não foi confirmada. Um novo email de confirmação foi enviado para ' . $usuario['email']));
+                            } else {
+                                header('Location: index.php?error=' . urlencode('Sua conta ainda não foi confirmada. Erro ao reenviar email. Tente novamente.'));
+                            }
+                        } catch (PDOException $e) {
+                            header('Location: index.php?error=' . urlencode('Sua conta ainda não foi confirmada. Erro interno. Tente novamente.'));
+                        }
                         exit();
                     }
                     

@@ -1461,8 +1461,53 @@ function formatBytes($bytes, $precision = 2)
             }
             
             // Iniciar análise (adicionar classe ao frame e mostrar loading)
-            iniciarAnalise(frameName, frameTime);
+            //iniciarAnalise(frameName, frameTime);
             
+            var imagemCompleta = `D:/Xampp_novo/htdocs/copasa/${imagePath}`;
+
+            $.ajax({
+                url: "https://moduloautoma.ddns.net/api/analisar_imagem",
+                method: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({ 
+                    image_path: imagemCompleta
+                }),
+                success: function (resposta) {
+                    console.log("Resposta da API:", resposta);
+                    /*
+
+                    try {
+                        // Processar resposta da IA
+                        const analiseData = typeof resposta === 'string' ? JSON.parse(resposta) : resposta;
+                        
+                        // Salvar JSON no servidor
+                        const jsonFileName = frameName.replace(/\.[^/.]+$/, "") + ".json";
+                        salvarAnaliseJSON(analiseData, jsonFileName, frameName, frameTime);
+                        
+                        // Finalizar análise e tornar item clicável
+                        finalizarAnalise(frameName);
+                        
+                    } catch (error) {
+                        console.error('Erro ao processar resposta da API:', error);
+                        erroNaAnalise(frameName, 'Erro ao processar análise da IA: ' + error.message);
+                    }
+                    */
+                },
+                error: function (xhr, status, error) {
+                    console.error('Erro na requisição para API Flask:', {xhr, status, error});
+                    //let mensagemErro = 'Erro ao enviar para análise da IA';
+                    
+                    //if (xhr.responseJSON && xhr.responseJSON.error) {
+                        //mensagemErro = xhr.responseJSON.error;
+                    //} else if (xhr.responseText) {
+                        //mensagemErro += ': ' + xhr.responseText;
+                    //}
+                    
+                    //erroNaAnalise(frameName, mensagemErro);
+                }
+            });
+            /*
             // Enviar para análise
             $.ajax({
                 url: 'teste_analise.php',
@@ -1494,6 +1539,7 @@ function formatBytes($bytes, $precision = 2)
                     erroNaAnalise(frameName, 'Erro ao enviar para análise da IA');
                 }
             });
+            */
             
         }
 
@@ -1930,9 +1976,23 @@ function formatBytes($bytes, $precision = 2)
             let conteudo = '';
             
             respostasAnaliticas.forEach((item, index) => {
-                const confianca = item.resposta.toLowerCase().includes('confiança: alta') ? 'success' : 
-                                 item.resposta.toLowerCase().includes('confiança: média') ? 'warning' : 
-                                 item.resposta.toLowerCase().includes('confiança: baixa') ? 'danger' : 'secondary';
+                // Verificar se existe a chave 'confianca' no objeto
+                let badgeHTML = '';
+                if (item.confianca) {
+                    const confiancaNivel = item.confianca.toLowerCase();
+                    const confiancaCor = confiancaNivel === 'alta' ? 'success' : 
+                                        confiancaNivel === 'média' || confiancaNivel === 'media' ? 'warning' : 
+                                        confiancaNivel === 'baixa' ? 'danger' : 'secondary';
+                    
+                    const confiancaTexto = confiancaNivel.charAt(0).toUpperCase() + confiancaNivel.slice(1);
+                    
+                    badgeHTML = `
+                        <span class="badge bg-${confiancaCor} ms-2">
+                            <i class="fas fa-circle me-1"></i>
+                            ${confiancaTexto}
+                        </span>
+                    `;
+                }
                 
                 conteudo += `
                     <div class="border rounded p-3 mb-3 bg-light">
@@ -1940,10 +2000,7 @@ function formatBytes($bytes, $precision = 2)
                             <h6 class="text-primary mb-1 flex-grow-1">
                                 <strong>${item.id_pergunta}.</strong> ${item.pergunta}
                             </h6>
-                            <span class="badge bg-${confianca} ms-2">
-                                <i class="fas fa-circle me-1"></i>
-                                ${confianca === 'success' ? 'Alta' : confianca === 'warning' ? 'Média' : confianca === 'danger' ? 'Baixa' : 'N/A'}
-                            </span>
+                            ${badgeHTML}
                         </div>
                         <p class="mb-0">${item.resposta}</p>
                     </div>
