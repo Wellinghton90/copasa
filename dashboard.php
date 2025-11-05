@@ -980,7 +980,7 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#projetos">
+                        <a class="nav-link" href="#" onclick="irProjetos(); return false;">
                             <i class="fas fa-project-diagram me-1"></i>
                             Projetos
                         </a>
@@ -1353,6 +1353,11 @@ if (isset($_GET['logout'])) {
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     
     <script>
+
+        function irProjetos() {
+            window.open('project-manager/index.php', '_blank');
+        }
+
         let obrasTable;
         
         // Inicializar DataTable quando a página carregar

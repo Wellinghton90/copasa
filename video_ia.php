@@ -31,6 +31,9 @@ $video_nome_sem_extensao = $video_info['filename'];
 $video_extensao = strtolower($video_info['extension']);
 $video_tamanho = filesize($video_path);
 
+// Criar caminho sem extensão para adicionar sufixos
+$video_path_sem_extensao = $video_info['dirname'] . '/' . $video_info['filename'];
+
 // Extrair cidade do caminho (evidencias/{cidade}/Videos/...)
 $path_parts = explode('/', str_replace('\\', '/', $video_path));
 $cidade_index = array_search('evidencias', $path_parts);
@@ -213,6 +216,67 @@ function formatBytes($bytes, $precision = 2)
             height: 100%;
             display: block;
             object-fit: contain;
+        }
+
+        /* Seletor de Qualidade do Vídeo */
+        .quality-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-wrapper:hover .quality-selector {
+            opacity: 1;
+        }
+
+        .quality-btn {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quality-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+        }
+
+        .quality-btn.active {
+            background: var(--gradient-primary);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.5);
+        }
+
+        .quality-btn i {
+            font-size: 0.9rem;
+        }
+
+        .quality-btn.loading {
+            opacity: 0.6;
+            cursor: wait;
+            pointer-events: none;
+        }
+
+        .quality-btn.loading i {
+            animation: spin 1s linear infinite;
         }
 
         /* Controls Section */
@@ -571,6 +635,23 @@ function formatBytes($bytes, $precision = 2)
 
             .frame-item img {
                 height: 80px;
+            }
+
+            /* Seletor de qualidade sempre visível em mobile */
+            .quality-selector {
+                opacity: 1;
+                top: 10px;
+                right: 10px;
+            }
+
+            .quality-btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                gap: 4px;
+            }
+
+            .quality-btn i {
+                font-size: 0.8rem;
             }
         }
 
@@ -997,9 +1078,19 @@ function formatBytes($bytes, $precision = 2)
                 <div class="video-container">
                     <div class="video-wrapper">
                         <video id="videoPlayer" controls>
-                            <source src="<?= htmlspecialchars($video_path) ?>" type="video/<?= $video_extensao ?>">
+                            <source src="<?= htmlspecialchars($video_path_sem_extensao) ?>_480p.mp4" type="video/mp4">
                             Seu navegador não suporta a reprodução de vídeos.
                         </video>
+                        
+                        <!-- Seletor de Qualidade -->
+                        <div id="qualitySelector" class="quality-selector">
+                            <button class="quality-btn" data-quality="480p">
+                                <i class="fas fa-tachometer-alt"></i> 480p
+                            </button>
+                            <button class="quality-btn" data-quality="hd">
+                                <i class="fas fa-hdd"></i> HD
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1067,7 +1158,7 @@ function formatBytes($bytes, $precision = 2)
                                     data-lng="<?= htmlspecialchars($frame_info['longitude']) ?>"
                                     data-frame="<?= htmlspecialchars($frame_name) ?>">
                                     <div style="position: relative;">
-                                        <img src="<?= htmlspecialchars($frames_path . '/' . $frame_name) ?>"
+                                        <img src="<?= htmlspecialchars($frames_path . '/' .'thumbs/' . $frame_name) ?>"
                                             alt="<?= htmlspecialchars($frame_name) ?>">
                                         <button class="frame-analysis-btn" 
                                             onclick="analyzeFrameWithAI('<?= htmlspecialchars($frames_path . '/' . $frame_name) ?>', '<?= htmlspecialchars($frame_name) ?>', '<?= htmlspecialchars($frame_info['tempo_video']) ?>')"
@@ -1134,6 +1225,9 @@ function formatBytes($bytes, $precision = 2)
         // Variáveis PHP para JavaScript
         const cidade = '<?= addslashes($cidade) ?>';
         const framesPath = '<?= addslashes($frames_path) ?>';
+        const videoPathOriginal = '<?= addslashes($video_path) ?>'; // Caminho completo com extensão original
+        
+        console.log('🎬 Video Path Original (HD):', videoPathOriginal);
         
         // Referência ao player de vídeo
         const videoPlayer = document.getElementById('videoPlayer');
@@ -1144,6 +1238,229 @@ function formatBytes($bytes, $precision = 2)
         let map = null;
         let markers = [];
         let currentActiveMarker = null;
+
+        // Variável para controlar qualidade atual do vídeo (será detectada automaticamente)
+        let qualidadeAtual = null;
+
+        // Função para detectar qualidade atual baseada no src do vídeo
+        function detectarQualidadeAtual() {
+            const srcAtual = videoPlayer.src || videoPlayer.currentSrc;
+            const qualidade = srcAtual.includes('_480p') ? '480p' : 'hd';
+            console.log('Qualidade detectada:', qualidade, '| Src:', srcAtual);
+            return qualidade;
+        }
+
+        // Função para trocar qualidade do vídeo
+        function trocarQualidadeVideo(qualidade, btnElement) {
+            // Detectar qualidade atual baseada no src real
+            const qualidadeReal = detectarQualidadeAtual();
+            
+            // Evitar trocar para a mesma qualidade
+            if (qualidadeReal === qualidade) {
+                console.log(`Já está em ${qualidade}, ignorando...`);
+                return;
+            }
+            
+            console.log(`Trocando qualidade de ${qualidadeReal} para ${qualidade}`);
+            
+            // Salvar estado atual do vídeo
+            const tempoAtual = videoPlayer.currentTime;
+            const estavaTocando = !videoPlayer.paused;
+            
+            // Pegar o src atual do vídeo
+            let srcAtual = videoPlayer.src || videoPlayer.currentSrc;
+            console.log('Src atual:', srcAtual);
+            
+            // Calcular novo src baseado na qualidade desejada
+            let novoSrc;
+            if (qualidade === '480p') {
+                // Adicionar flag _480p antes da extensão (sempre em minúsculo)
+                // Remove qualquer extensão (.mp4, .MP4) e adiciona _480p.mp4
+                novoSrc = srcAtual.replace(/\.(mp4|MP4)$/i, '_480p.mp4');
+            } else {
+                // Voltar para HD: usar o caminho original do PHP
+                console.log('📽️ Voltando para HD, usando path original:', videoPathOriginal);
+                
+                // Se srcAtual é URL completa, pegar a base URL
+                if (srcAtual.includes('://')) {
+                    const urlAtual = new URL(srcAtual);
+                    const baseUrl = urlAtual.origin;
+                    const pathCompleto = urlAtual.pathname;
+                    const pathPartes = pathCompleto.split('/');
+                    // Remover até 'copasa' se existir
+                    const copasaIndex = pathPartes.indexOf('copasa');
+                    if (copasaIndex !== -1) {
+                        // Construir URL com caminho original
+                        const basePath = pathPartes.slice(0, copasaIndex + 1).join('/');
+                        novoSrc = baseUrl + basePath + '/' + videoPathOriginal;
+                        console.log('🔗 Base URL:', baseUrl);
+                        console.log('🔗 Base Path:', basePath);
+                    } else {
+                        // Construir URL diretamente
+                        novoSrc = baseUrl + '/' + videoPathOriginal;
+                        console.log('🔗 Base URL (direto):', baseUrl);
+                    }
+                } else {
+                    // Src é relativo
+                    novoSrc = videoPathOriginal;
+                    console.log('📁 Usando path relativo');
+                }
+            }
+            
+            console.log('Novo src:', novoSrc);
+            
+            // Validar se o novo src é diferente do atual
+            if (novoSrc === srcAtual) {
+                console.error('Erro: Novo src é igual ao atual! Abortando troca.');
+                return;
+            }
+            
+            // Adicionar loading nos botões
+            const allBtns = document.querySelectorAll('.quality-btn');
+            allBtns.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('loading');
+            });
+            
+            // Flag para controlar se já finalizou
+            let jaFinalizou = false;
+            
+            // Criar função para finalizar a troca
+            const finalizarTroca = () => {
+                if (jaFinalizou) return;
+                jaFinalizou = true;
+                
+                console.log('Finalizando troca de qualidade...');
+                
+                // Restaurar tempo
+                if (tempoAtual > 0) {
+                    videoPlayer.currentTime = tempoAtual;
+                }
+                
+                // Remover loading e marcar botão como ativo
+                allBtns.forEach(btn => btn.classList.remove('loading'));
+                btnElement.classList.add('active');
+                
+                // Continuar reprodução se estava tocando
+                if (estavaTocando) {
+                    const playPromise = videoPlayer.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.log('Erro ao retomar reprodução:', e);
+                        });
+                    }
+                }
+                
+                // Atualizar qualidade atual
+                qualidadeAtual = qualidade;
+                
+                console.log(`✓ Qualidade alterada para ${qualidade}`);
+            };
+            
+            // Listener para quando vídeo carregar
+            const onVideoReady = () => {
+                console.log('Vídeo pronto (canplay)');
+                setTimeout(finalizarTroca, 50);
+            };
+            
+            // Adicionar listeners
+            videoPlayer.addEventListener('canplay', onVideoReady, { once: true });
+            
+            // Timeout de segurança (3 segundos)
+            const timeoutId = setTimeout(() => {
+                console.warn('Timeout atingido, forçando finalização');
+                finalizarTroca();
+            }, 3000);
+            
+            // Limpar timeout quando finalizar
+            videoPlayer.addEventListener('canplay', () => clearTimeout(timeoutId), { once: true });
+            
+            // Trocar source do vídeo
+            videoPlayer.src = novoSrc;
+            videoPlayer.load();
+        }
+
+        // Função para atualizar botões ativos baseado na qualidade atual
+        function atualizarBotoesQualidade() {
+            const qualidadeReal = detectarQualidadeAtual();
+            const allBtns = document.querySelectorAll('.quality-btn');
+            
+            allBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.quality === qualidadeReal) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            qualidadeAtual = qualidadeReal;
+        }
+
+        // Configurar eventos dos botões de qualidade
+        document.addEventListener('DOMContentLoaded', function() {
+            const qualityButtons = document.querySelectorAll('.quality-btn');
+            
+            qualityButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const quality = this.dataset.quality;
+                    
+                    trocarQualidadeVideo(quality, this);
+                });
+            });
+            
+            // Verificar se vídeo 480p falhou ao carregar (não existe)
+            videoPlayer.addEventListener('error', function(e) {
+                console.warn('Erro ao carregar vídeo:', e);
+                const srcAtual = videoPlayer.src || videoPlayer.currentSrc;
+                
+                // Se erro foi ao carregar 480p, tentar HD
+                if (srcAtual.includes('_480p')) {
+                    console.log('Vídeo 480p não encontrado, carregando HD...');
+                    
+                    // Usar caminho original do PHP
+                    let hdSrc;
+                    if (srcAtual.includes('://')) {
+                        const urlAtual = new URL(srcAtual);
+                        const baseUrl = urlAtual.origin;
+                        const pathCompleto = urlAtual.pathname;
+                        const pathPartes = pathCompleto.split('/');
+                        const copasaIndex = pathPartes.indexOf('copasa');
+                        if (copasaIndex !== -1) {
+                            const basePath = pathPartes.slice(0, copasaIndex + 1).join('/');
+                            hdSrc = baseUrl + basePath + '/' + videoPathOriginal;
+                        } else {
+                            hdSrc = baseUrl + '/' + videoPathOriginal;
+                        }
+                    } else {
+                        hdSrc = videoPathOriginal;
+                    }
+                    
+                    videoPlayer.src = hdSrc;
+                    videoPlayer.load();
+                    
+                    // Atualizar botões para HD
+                    setTimeout(() => {
+                        atualizarBotoesQualidade();
+                    }, 100);
+                }
+            }, { once: true });
+            
+            // Atualizar botões quando o vídeo carregar pela primeira vez
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                setTimeout(() => {
+                    atualizarBotoesQualidade();
+                }, 100);
+            });
+            
+            // Tentar atualizar imediatamente se vídeo já está carregado
+            if (videoPlayer.readyState >= 1) {
+                setTimeout(() => {
+                    atualizarBotoesQualidade();
+                }, 100);
+            }
+        });
 
 
         // Função para criar ícone padrão
@@ -1335,7 +1652,7 @@ function formatBytes($bytes, $precision = 2)
             
             if (!img || !container) return;
             
-            const scaleFactor = delta > 0 ? 1.1 : 0.9;
+            const scaleFactor = delta < 0 ? 1.1 : 0.9;
             const oldScale = imageScale;
             imageScale *= scaleFactor;
             
@@ -2558,4 +2875,5 @@ function formatBytes($bytes, $precision = 2)
     </script>
 </body>
 
+</html>
 </html>

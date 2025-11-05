@@ -173,6 +173,12 @@ function listarVideos($dir, $cidade)
             if (in_array($extensao, $extensoes_video)) {
                 $nomeVideo = $file->getFilename();
                 
+                // Ignorar vídeos com flag _480p no final do nome
+                $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
+                if (substr($nomeVideoSemExtensao, -5) === '_480p') {
+                    continue;
+                }
+                
                 // Buscar dados do vídeo no JSON
                 $metadataVideos = $videoMetadata[$nomeVideo] ?? [];
                 
@@ -268,6 +274,7 @@ if (isset($_GET['logout'])) {
     header('Location: index.php');
     exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -1231,13 +1238,32 @@ if (isset($_GET['logout'])) {
                             </thead>
                             <tbody>
                                 <?php foreach ($videos as $video): ?>
+                                    <?php
+                                    // Criar valor sortável para data
+                                    $dataSortavel = '';
+                                    if ($video['data'] !== 'S/D') {
+                                        try {
+                                            $dataPartes = explode(' ', $video['data']);
+                                            if (count($dataPartes) === 2) {
+                                                $dataPartes2 = explode('/', $dataPartes[0]);
+                                                if (count($dataPartes2) === 3) {
+                                                    $dataSortavel = $dataPartes2[2] . '-' . str_pad($dataPartes2[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($dataPartes2[0], 2, '0', STR_PAD_LEFT) . ' ' . $dataPartes[1];
+                                                }
+                                            }
+                                        } catch (Exception $e) {
+                                            $dataSortavel = '0000-00-00 00:00';
+                                        }
+                                    } else {
+                                        $dataSortavel = '0000-00-00 00:00';
+                                    }
+                                    ?>
                                     <tr>
                                         <td>
                                             <a href="ver_video.php?video=<?= urlencode($video['nome']) ?>&cidade=<?= urlencode($obra['cidade']) ?>" class="btn btn-primary btn-sm" target="_blank" title="Ver no mapa">
                                                 <i class="fas fa-globe"></i>
                                             </a>
                                         </td>
-                                        <td>
+                                        <td data-order="<?= htmlspecialchars($dataSortavel) ?>">
                                             <a style="color: blue;" href="video_ia.php?video=<?= urlencode($video['caminho_relativo']) ?>" target="_blank">
                                                 <?= htmlspecialchars($video['data']) ?>
                                             </a>
@@ -1440,35 +1466,9 @@ if (isset($_GET['logout'])) {
                             className: 'text-center'
                         },
                         {
-                            type: 'date',
                             targets: 1, // Coluna de Data (índice 1)
-                            className: 'text-start',
-                            render: function(data, type, row) {
-                                if (type === 'sort' || type === 'type') {
-                                    // Converter data brasileira (DD/MM/YYYY HH:MM) para formato sortável (YYYY-MM-DD HH:MM)
-                                    if (data && typeof data === 'string') {
-                                        var parts = data.split(' ');
-                                        if (parts.length === 2) {
-                                            var datePart = parts[0].split('/');
-                                            var timePart = parts[1];
-                                            if (datePart.length === 3) {
-                                                // Validar se são números válidos
-                                                var day = parseInt(datePart[0]);
-                                                var month = parseInt(datePart[1]);
-                                                var year = parseInt(datePart[2]);
-                                                
-                                                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                                                    return year + '-' + 
-                                                           String(month).padStart(2, '0') + '-' + 
-                                                           String(day).padStart(2, '0') + ' ' + 
-                                                           timePart;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                return data; // Retornar dados originais para display
-                            }
+                            className: 'text-start'
+                            // Ordenação usando data-order do HTML
                         },
                         {
                             targets: 2, // Coluna de Nome (índice 2) - alinhar à esquerda
