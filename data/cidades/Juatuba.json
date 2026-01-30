@@ -1,0 +1,410 @@
+{
+    "nome": "Juatuba",
+    "coordenadas": {
+        "lat": -19.945481800772818,
+        "lng": -44.34694650981332
+    },
+    "zoom": 18,
+    "projetos": [
+        {
+            "nome": "Juatuba_02-12",
+            "datetime": "2025-12-02 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_04-12",
+            "datetime": "2025-12-04 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_06-11",
+            "datetime": "2025-11-06 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.94489325627723,
+                    "lng": -44.34685293585062,
+                    "descricao": "Canto superior esquerdo da cerca",
+                    "datahora": "2026-01-27 20:14:29",
+                    "ref_id": "gcp_1769544498001",
+                    "id": "gcp_1769544871000"
+                },
+                {
+                    "lat": -19.94535749606528,
+                    "lng": -44.34652268886566,
+                    "descricao": "Canto inferior esquerdo do predio grande no centro",
+                    "datahora": "2026-01-27 20:14:53",
+                    "ref_id": "gcp_1769544853003",
+                    "id": "gcp_1769544895001"
+                },
+                {
+                    "lat": -19.94561120426604,
+                    "lng": -44.34637349098921,
+                    "descricao": "Canto direito inferior do predio abaixo mais a esquerda",
+                    "datahora": "2026-01-27 20:28:34",
+                    "id": "gcp_1769545716002"
+                },
+                {
+                    "lat": -19.945059664178984,
+                    "lng": -44.34659510850907,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-27 20:41:53",
+                    "ref_id": "gcp_1769546488002",
+                    "id": "gcp_1769546516003"
+                },
+                {
+                    "lat": -19.94593645443141,
+                    "lng": -44.34653509408236,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-27 20:43:26",
+                    "ref_id": "gcp_1769546589006",
+                    "id": "gcp_1769546608004"
+                }
+            ]
+        },
+        {
+            "nome": "Juatuba_08-01",
+            "datetime": "2026-01-08 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_08-11",
+            "datetime": "2025-11-08 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.945597021830793,
+                    "lng": -44.34639193117619,
+                    "descricao": "Canto direito inferior do predio abaixo mais a esquerda",
+                    "datahora": "2026-01-27 20:39:17",
+                    "ref_id": "gcp_1769545716002",
+                    "id": "gcp_1769546359000"
+                },
+                {
+                    "lat": -19.945344889435976,
+                    "lng": -44.34654280543328,
+                    "descricao": "Canto inferior esquerdo do predio grande no centro",
+                    "datahora": "2026-01-27 20:39:54",
+                    "ref_id": "gcp_1769544853003",
+                    "id": "gcp_1769546396001"
+                },
+                {
+                    "lat": -19.94504705752589,
+                    "lng": -44.34661623090506,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-27 20:41:26",
+                    "id": "gcp_1769546488002"
+                },
+                {
+                    "lat": -19.945922587189973,
+                    "lng": -44.34655319899321,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-27 20:43:46",
+                    "ref_id": "gcp_1769546589006",
+                    "id": "gcp_1769546628003"
+                }
+            ]
+        },
+        {
+            "nome": "Juatuba_08-12",
+            "datetime": "2025-12-08 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_10-11",
+            "datetime": "2025-11-10 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.945922587189973,
+                    "lng": -44.34655353426935,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-27 20:44:04",
+                    "ref_id": "gcp_1769546589006",
+                    "id": "gcp_1769546646000"
+                },
+                {
+                    "lat": -19.945597652161275,
+                    "lng": -44.346392601728446,
+                    "descricao": "Canto direito inferior do predio abaixo mais a esquerda",
+                    "datahora": "2026-01-27 20:44:37",
+                    "ref_id": "gcp_1769545716002",
+                    "id": "gcp_1769546680001"
+                },
+                {
+                    "lat": -19.945345519767464,
+                    "lng": -44.3465431407094,
+                    "descricao": "Canto inferior esquerdo do predio grande no centro",
+                    "datahora": "2026-01-27 20:44:52",
+                    "ref_id": "gcp_1769544853003",
+                    "id": "gcp_1769546694002"
+                },
+                {
+                    "lat": -19.945047687858576,
+                    "lng": -44.34661690145731,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-27 20:45:16",
+                    "ref_id": "gcp_1769546488002",
+                    "id": "gcp_1769546718003"
+                }
+            ]
+        },
+        {
+            "nome": "Juatuba_11-12",
+            "datetime": "2025-12-11 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_12-01-26",
+            "datetime": "2026-01-12 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_13-11",
+            "datetime": "2025-11-13 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_15-01",
+            "datetime": "2026-01-15 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_15-12",
+            "datetime": "2025-12-15 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_18-11",
+            "datetime": "2025-11-18 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.945354563546715,
+                    "lng": -44.346537105739124,
+                    "descricao": "Canto inferior esquerdo do predio grande no centro",
+                    "datahora": "2026-01-28 12:28:15",
+                    "ref_id": "gcp_1769544853003",
+                    "id": "gcp_1769603297000"
+                },
+                {
+                    "lat": -19.945929835975416,
+                    "lng": -44.34654615819454,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-28 12:29:22",
+                    "ref_id": "gcp_1769546589006",
+                    "id": "gcp_1769603364001"
+                },
+                {
+                    "lat": -19.945058826402892,
+                    "lng": -44.34661007020623,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-28 12:30:05",
+                    "ref_id": "gcp_1769546488002",
+                    "id": "gcp_1769603407002"
+                },
+                {
+                    "lat": -19.945606387531985,
+                    "lng": -44.34638656675816,
+                    "descricao": "Canto direito inferior do predio abaixo mais a esquerda",
+                    "datahora": "2026-01-28 12:30:28",
+                    "ref_id": "gcp_1769545716002",
+                    "id": "gcp_1769603430003"
+                },
+                {
+                    "lat": -19.94551325618107,
+                    "lng": -44.34586437419057,
+                    "descricao": "Canto superior direito da cerca",
+                    "datahora": "2026-01-28 12:31:37",
+                    "ref_id": "gcp_1769544777002",
+                    "id": "gcp_1769603499004"
+                },
+                {
+                    "lat": -19.945709998065105,
+                    "lng": -44.34687372297049,
+                    "descricao": "Ponto sobre canto esquerdo infeior da malha de ferro",
+                    "datahora": "2026-01-28 12:33:25",
+                    "ref_id": "gcp_1769603592007",
+                    "id": "gcp_1769603607005"
+                }
+            ]
+        },
+        {
+            "nome": "Juatuba_24-11-2025",
+            "datetime": "2025-11-24 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.945515895691354,
+                    "lng": -44.3458388093859,
+                    "descricao": "Canto superior direito da cerca",
+                    "datahora": "2026-01-28 12:34:20",
+                    "ref_id": "gcp_1769544777002",
+                    "id": "gcp_1769603662000"
+                },
+                {
+                    "lat": -19.94570972229572,
+                    "lng": -44.34685930609704,
+                    "descricao": "Ponto sobre canto esquerdo infeior da malha de ferro",
+                    "datahora": "2026-01-28 12:35:13",
+                    "ref_id": "gcp_1769603592007",
+                    "id": "gcp_1769603715001"
+                },
+                {
+                    "lat": -19.945933568090275,
+                    "lng": -44.34652855619788,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-28 12:35:31",
+                    "ref_id": "gcp_1769546589006",
+                    "id": "gcp_1769603733002"
+                },
+                {
+                    "lat": -19.9450548474281,
+                    "lng": -44.34658735524864,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-28 12:36:13",
+                    "ref_id": "gcp_1769546488002",
+                    "id": "gcp_1769603775003"
+                }
+            ]
+        },
+        {
+            "nome": "Juatuba_27-11",
+            "datetime": "2025-11-27 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            }
+        },
+        {
+            "nome": "Juatuba_28_29-10",
+            "datetime": "2025-10-28 00:00:00",
+            "desenhos": {
+                "poligonos": [],
+                "linhas": [],
+                "pontos": []
+            },
+            "pontos_referencia": [
+                {
+                    "lat": -19.94565469705952,
+                    "lng": -44.3473830074072,
+                    "descricao": "Canto inferior esquerdo limite da cerca",
+                    "datahora": "2026-01-27 20:07:13",
+                    "id": "gcp_1769544435000"
+                },
+                {
+                    "lat": -19.94488632261085,
+                    "lng": -44.346869029104724,
+                    "descricao": "Canto superior esquerdo da cerca",
+                    "datahora": "2026-01-27 20:08:16",
+                    "id": "gcp_1769544498001"
+                },
+                {
+                    "lat": -19.94551350301961,
+                    "lng": -44.34585917741061,
+                    "descricao": "Canto superior direito da cerca",
+                    "datahora": "2026-01-27 20:12:55",
+                    "id": "gcp_1769544777002"
+                },
+                {
+                    "lat": -19.945352138247948,
+                    "lng": -44.346536770463,
+                    "descricao": "Canto inferior esquerdo do predio grande no centro",
+                    "datahora": "2026-01-27 20:14:11",
+                    "id": "gcp_1769544853003"
+                },
+                {
+                    "lat": -19.945606791952986,
+                    "lng": -44.34638489037753,
+                    "descricao": "Canto direito inferior do predio abaixo mais a esquerda",
+                    "datahora": "2026-01-27 20:28:55",
+                    "ref_id": "gcp_1769545716002",
+                    "id": "gcp_1769545737004"
+                },
+                {
+                    "lat": -19.94505462151787,
+                    "lng": -44.3466105312109,
+                    "descricao": "Canto superior esquerda do predio da de cima",
+                    "datahora": "2026-01-27 20:41:39",
+                    "ref_id": "gcp_1769546488002",
+                    "id": "gcp_1769546502005"
+                },
+                {
+                    "lat": -19.945932042127442,
+                    "lng": -44.3465468287468,
+                    "descricao": "Centro da tampa da bomba",
+                    "datahora": "2026-01-27 20:43:07",
+                    "id": "gcp_1769546589006"
+                },
+                {
+                    "lat": -19.945710234438877,
+                    "lng": -44.34687720146031,
+                    "descricao": "Ponto sobre canto esquerdo infeior da malha de ferro",
+                    "datahora": "2026-01-28 12:33:10",
+                    "id": "gcp_1769603592007"
+                }
+            ]
+        }
+    ],
+    "informacoes": {
+        "estado": "MG",
+        "descricao": "Cidade de Juatuba - Minas Gerais"
+    }
+}

@@ -1,0 +1,19 @@
+# Arquivos de configuração local com chaves sensíveis
+config/api_keys.local.php
+
+# JSON de projetos (gerado pelo script Python)
+data/projects.json
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp

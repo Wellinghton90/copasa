@@ -1,0 +1,12 @@
+{
+    "nome": "Vianópolis",
+    "coordenadas": {
+        "lat": -16.743212560420353,
+        "lng": -48.516516992690285
+    },
+    "zoom": 17,
+    "informacoes": {
+        "estado": "GO",
+        "descricao": "Cidade de Vianópolis - Goiás"
+    }
+}

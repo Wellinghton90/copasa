@@ -153,12 +153,13 @@ try {
                 <a href="obra_detalhes.php?id=' . $obra['id'] . '" class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
                     <i class="fas fa-eye"></i>
                 </a>
-                <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirObra(' . $obra['id'] . ')" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                </button>
             </div>
         ';
-        
+        /*
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirObra(' . $obra['id'] . ')" title="Excluir">
+            <i class="fas fa-trash"></i>
+        </button>
+        */
         // Formatar datas
         $dataInicio = $obra['data_inicio'] ? date('d/m/Y', strtotime($obra['data_inicio'])) : '-';
         $dataPrevista = $obra['data_prevista'] ? date('d/m/Y', strtotime($obra['data_prevista'])) : '-';

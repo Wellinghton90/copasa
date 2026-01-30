@@ -974,6 +974,11 @@ if (isset($_GET['logout'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="alertasCaio()">
+                            <i class="fa-solid fa-bell"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#dashboard">
                             <i class="fas fa-tachometer-alt me-1"></i>
                             Dashboard

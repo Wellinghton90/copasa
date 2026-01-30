@@ -69,35 +69,37 @@ if (!file_exists($videos_path)) {
 }
 
 // Função para carregar metadados dos vídeos do arquivo JSON
-function loadVideoMetadata($cidade) {
+function loadVideoMetadata($cidade)
+{
     $metadataPath = "evidencias/{$cidade}/Videos/metadados.json";
-    
+
     if (!file_exists($metadataPath)) {
         return [];
     }
-    
+
     $jsonContent = file_get_contents($metadataPath);
     if ($jsonContent === false) {
         return [];
     }
-    
+
     $metadata = json_decode($jsonContent, true);
     return $metadata ?: [];
 }
 
 // Função para contar quantos frames existem para um vídeo
-function contarFrames($nomeVideo, $cidade) {
+function contarFrames($nomeVideo, $cidade)
+{
     $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
     $framesPath = "evidencias/{$cidade}/frames/{$nomeVideoSemExtensao}(frames)";
-    
+
     if (!is_dir($framesPath)) {
         return 0;
     }
-    
+
     // Contar arquivos de imagem (JPG, JPEG)
     $files = scandir($framesPath);
     $contador = 0;
-    
+
     foreach ($files as $file) {
         if ($file != '.' && $file != '..') {
             $extensao = strtolower(pathinfo($file, PATHINFO_EXTENSION));
@@ -106,30 +108,32 @@ function contarFrames($nomeVideo, $cidade) {
             }
         }
     }
-    
+
     return $contador;
 }
 
 // Função para verificar se existem frames para um vídeo (manter compatibilidade)
-function verificarFrames($nomeVideo, $cidade) {
+function verificarFrames($nomeVideo, $cidade)
+{
     return contarFrames($nomeVideo, $cidade) > 0;
 }
 
 // Função para verificar se um vídeo está analisado
-function verificarAnalisado($nomeVideo, $cidade) {
+function verificarAnalisado($nomeVideo, $cidade)
+{
     // Se tiver 0 frames, automaticamente não está analisado
     $quantidadeFrames = contarFrames($nomeVideo, $cidade);
     if ($quantidadeFrames === 0) {
         return false;
     }
-    
+
     $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
     $framesPath = "evidencias/{$cidade}/frames/{$nomeVideoSemExtensao}(frames)";
-    
+
     if (!is_dir($framesPath)) {
         return false;
     }
-    
+
     // Buscar por arquivos JPG e verificar se existe JSON correspondente
     $files = scandir($framesPath);
     foreach ($files as $file) {
@@ -138,14 +142,14 @@ function verificarAnalisado($nomeVideo, $cidade) {
             if ($extensao === 'jpg' || $extensao === 'jpeg') {
                 $nomeArquivo = pathinfo($file, PATHINFO_FILENAME);
                 $jsonFile = $framesPath . '/' . $nomeArquivo . '.json';
-                
+
                 if (file_exists($jsonFile)) {
                     return true; // Encontrou pelo menos um conjunto JPG + JSON
                 }
             }
         }
     }
-    
+
     return false;
 }
 
@@ -172,23 +176,23 @@ function listarVideos($dir, $cidade)
             $extensao = strtolower($file->getExtension());
             if (in_array($extensao, $extensoes_video)) {
                 $nomeVideo = $file->getFilename();
-                
+
                 // Ignorar vídeos com flag _480p no final do nome
                 $nomeVideoSemExtensao = pathinfo($nomeVideo, PATHINFO_FILENAME);
                 if (substr($nomeVideoSemExtensao, -5) === '_480p') {
                     continue;
                 }
-                
+
                 // Buscar dados do vídeo no JSON
                 $metadataVideos = $videoMetadata[$nomeVideo] ?? [];
-                
+
                 // Extrair dados do JSON ou usar valores padrão
                 $tamanhoBytes = $metadataVideos['tamanho'] ?? $file->getSize();
                 $dataExibicao = 'S/D';
                 $latitude = 'S/D';
                 $longitude = 'S/D';
                 $duracao = 'S/D';
-                
+
                 // Processar data do JSON
                 if (!empty($metadataVideos['data'])) {
                     try {
@@ -200,7 +204,7 @@ function listarVideos($dir, $cidade)
                 } else {
                     $dataExibicao = date('d/m/Y H:i', $file->getMTime());
                 }
-                
+
                 // Extrair latitude e longitude do JSON
                 if (isset($metadataVideos['latitude']) && $metadataVideos['latitude'] !== null) {
                     $latitude = $metadataVideos['latitude'];
@@ -208,16 +212,16 @@ function listarVideos($dir, $cidade)
                 if (isset($metadataVideos['longitude']) && $metadataVideos['longitude'] !== null) {
                     $longitude = $metadataVideos['longitude'];
                 }
-                
+
                 // Extrair duração do JSON
                 if (!empty($metadataVideos['tempo'])) {
                     $duracao = $metadataVideos['tempo'];
                 }
-                
+
                 // Verificar quantidade de frames e se está analisado
                 $quantidadeFrames = contarFrames($nomeVideo, $cidade);
                 $analisado = verificarAnalisado($nomeVideo, $cidade);
-                
+
                 $videos[] = [
                     'nome' => $nomeVideo,
                     'caminho' => $file->getPathname(),
@@ -1143,6 +1147,10 @@ if (isset($_GET['logout'])) {
                     Gêmeos Digitais
                 </button>
             </li>
+            <button class="nav-link" id="timeline_tiles" onclick="window.location.href='timeline_tiles.php?cidade=<?= $obra['cidade'] ?>'">
+                <i class="fa-solid fa-calendar-days me-2"></i>
+                Timeline Obra
+            </button>
         </ul>
 
         <div class="tab-content" id="obraTabContent">
@@ -1341,7 +1349,7 @@ if (isset($_GET['logout'])) {
                                         <td>
 
                                             <a target="_blank" href="desenhos_detalhes.php?id=<?= urlencode($obra_id) ?>&cidade=<?= urlencode($obra['cidade']) ?>&lat=<?= urlencode($obra['latitude']) ?>&lng=<?= urlencode($obra['longitude']) ?>&projeto=<?= urlencode($projeto['nome']) ?>/3_dsm_ortho/2_mosaic/google_tiles" class="btn btn-sm btn-outline-info">
-                                               <i class="fas fa-map me-2"></i>
+                                                <i class="fas fa-map me-2"></i>
                                                 Ortofoto
                                             </a>
                                         </td>
@@ -1374,7 +1382,7 @@ if (isset($_GET['logout'])) {
         $(document).ready(function() {
             // Variáveis para armazenar as tabelas
             let documentosTable, videosTable, projetosTable;
-            
+
             // Configuração para tabela de documentos
             if ($('#documentosTable').length) {
                 documentosTable = $('#documentosTable').DataTable({
@@ -1392,8 +1400,7 @@ if (isset($_GET['logout'])) {
                     order: [
                         [3, 'desc']
                     ], // Ordenar pela coluna de Data (índice 3) em ordem decrescente
-                    columnDefs: [
-                        {
+                    columnDefs: [{
                             orderable: false,
                             targets: 0,
                             className: 'text-center'
@@ -1424,12 +1431,12 @@ if (isset($_GET['logout'])) {
                                                 var day = parseInt(datePart[0]);
                                                 var month = parseInt(datePart[1]);
                                                 var year = parseInt(datePart[2]);
-                                                
+
                                                 if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                                                    return year + '-' + 
-                                                           String(month).padStart(2, '0') + '-' + 
-                                                           String(day).padStart(2, '0') + ' ' + 
-                                                           timePart;
+                                                    return year + '-' +
+                                                        String(month).padStart(2, '0') + '-' +
+                                                        String(day).padStart(2, '0') + ' ' +
+                                                        timePart;
                                                 }
                                             }
                                         }
@@ -1459,8 +1466,7 @@ if (isset($_GET['logout'])) {
                     order: [
                         [1, 'desc']
                     ], // Ordenar pela coluna de Data (índice 1) em ordem decrescente
-                    columnDefs: [
-                        {
+                    columnDefs: [{
                             orderable: false,
                             targets: 0, // Coluna de Ação (índice 0) - não ordenável
                             className: 'text-center'
