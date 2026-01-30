@@ -10,15 +10,94 @@ if (!isset($_SESSION['user_copasa'])) {
     exit();
 }
 
-$projeto = $_GET['projeto'];
-$cidade = $_GET['cidade'];
-$latitude = $_GET['lat'];
-$longitude = $_GET['lng'];
+$projeto = $_GET['projeto'] ?? '';
+$cidade = $_GET['cidade'] ?? '';
+$id = $_GET['id'] ?? '';
 
-echo "<script>let urlProjeto = '$projeto';</script>";
-echo "<script>let urlCidade = '$cidade';</script>";
-echo "<script>let latitude = '$latitude';</script>";
-echo "<script>let longitude = '$longitude';</script>";
+$cidade_safe = preg_replace('/[^a-zA-Z0-9_-]/', '', $cidade);
+$projeto_safe = preg_replace('/[^a-zA-Z0-9_.-]/', '', $projeto);
+
+// Coordenadas e imagens: ler do arquivo .p4d (projetos/{cidade}/{projeto}.p4d)
+$latitude = null;
+$longitude = null;
+$zoom_inicial = 19;
+$imagens_p4d = [];
+$p4d_path = __DIR__ . '/projetos/' . $cidade_safe . '/' . $projeto_safe . '.p4d';
+$base_url_imagens = 'projetos/' . $cidade_safe . '/' . $projeto_safe . '/1_initial/images/';
+$base_url_undistorted = 'projetos/' . $cidade_safe . '/' . $projeto_safe . '/1_initial/images/undistorted_images/';
+
+if (is_file($p4d_path)) {
+    libxml_use_internal_errors(true);
+    $xml = @simplexml_load_file($p4d_path);
+    if ($xml !== false) {
+        $images = $xml->xpath('//images/image');
+        if (!empty($images)) {
+            $lista = [];
+            foreach ($images as $img) {
+                $path_attr = isset($img['path']) ? (string) $img['path'] : '';
+                $nome_arquivo = $path_attr !== '' ? basename($path_attr) : '';
+                if ($nome_arquivo === '') continue;
+                $time = isset($img->time) ? trim((string) $img->time) : '';
+                $lat = null;
+                $lng = null;
+                if (isset($img->gps)) {
+                    $g = $img->gps;
+                    if (isset($g['lat'])) $lat = (float) $g['lat'];
+                    if (isset($g['lng'])) $lng = (float) $g['lng'];
+                }
+                if ($lat === null || $lng === null) continue;
+                $nome_enc = rawurlencode($nome_arquivo);
+                $nome_jpg = preg_replace('/\.(JPG|JPEG|jpeg)$/i', '.jpg', $nome_arquivo);
+                $base_project_data = 'projetos/' . $cidade_safe . '/' . $projeto_safe . '/1_initial/project_data/';
+                $lista[] = [
+                    'nome' => $nome_arquivo,
+                    'time' => $time,
+                    'lat' => $lat,
+                    'lng' => $lng,
+                    'url' => $base_url_imagens . $nome_enc,
+                    'url_undistorted' => $base_url_undistorted . $nome_enc,
+                    'url_project_data' => $base_project_data . rawurlencode($nome_jpg),
+                ];
+            }
+            if (!empty($lista)) {
+                usort($lista, function ($a, $b) {
+                    return strcmp($a['time'], $b['time']);
+                });
+                $imagens_p4d = $lista;
+                $primeira = $lista[0];
+                $latitude = $primeira['lat'];
+                $longitude = $primeira['lng'];
+            }
+        }
+    }
+}
+
+// Fallback: JSON da cidade ou centro de Minas Gerais
+if ($latitude === null || $longitude === null) {
+    $cidade_json_path = __DIR__ . '/data/cidades/' . $cidade_safe . '.json';
+    if (file_exists($cidade_json_path)) {
+        $cidade_data = json_decode(file_get_contents($cidade_json_path), true);
+        if (!empty($cidade_data['coordenadas']['lat']) && !empty($cidade_data['coordenadas']['lng'])) {
+            $latitude = $cidade_data['coordenadas']['lat'];
+            $longitude = $cidade_data['coordenadas']['lng'];
+        }
+    }
+}
+if ($latitude === null || $longitude === null) {
+    $latitude = -19.949027;
+    $longitude = -44.3423601;
+}
+
+// Path base das ortofotos
+$url_ortofoto_base = 'projetos/' . $cidade_safe . '/' . $projeto_safe . '/3_dsm_ortho/2_mosaic/google_tiles';
+
+echo "<script>let urlProjeto = " . json_encode($projeto) . ";</script>";
+echo "<script>let urlCidade = " . json_encode($cidade) . ";</script>";
+echo "<script>let latitude = " . json_encode((string) $latitude) . ";</script>";
+echo "<script>let longitude = " . json_encode((string) $longitude) . ";</script>";
+echo "<script>let zoomInicial = " . (int) $zoom_inicial . ";</script>";
+echo "<script>let urlOrtofotoBase = " . json_encode($url_ortofoto_base) . ";</script>";
+echo "<script>let imagensP4d = " . json_encode($imagens_p4d) . ";</script>";
 
 ?>
 
@@ -545,7 +624,14 @@ echo "<script>let longitude = '$longitude';</script>";
                             </label>
                         </div>
                         
-                        <!-- Adicione novos checkboxes aqui no futuro -->
+                        <!-- Checkbox Imagens (fotos do projeto .p4d) -->
+                        <div class="layer-item">
+                            <label class="layer-checkbox">
+                                <input type="checkbox" data-layer="images" class="layer-toggle" onchange="toggleLayer(this)">
+                                <span class="checkbox-custom"></span>
+                                <span><i class="fas fa-camera me-2"></i>Imagens</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -616,7 +702,7 @@ echo "<script>let longitude = '$longitude';</script>";
                     position: google.maps.ControlPosition.RIGHT_BOTTOM
                 },
 
-                zoom: 16,
+                zoom: typeof zoomInicial !== 'undefined' ? zoomInicial : 18,
                 center: coordsLocal,
                 //mapId: "DEMO_MAP_ID",
 
@@ -635,9 +721,8 @@ echo "<script>let longitude = '$longitude';</script>";
 
             // Variável para controlar o estado da ortofoto
             var ortofotoAtiva = true;
-            //pasta das fotos
-
-            var url_ortofoto = `projetos/${urlCidade}/${urlProjeto}`;
+            // Base path das ortofotos (definido no PHP, pode vir de outra fonte no futuro)
+            var url_ortofoto = urlOrtofotoBase;
             console.log(url_ortofoto);
 
             // Adicionando tiles e calculando os centros
@@ -674,8 +759,135 @@ echo "<script>let longitude = '$longitude';</script>";
             window.ortofotoLayer = ortofotoLayer;
             window.ortofotoIndex = 0; // Índice da ortofoto no overlayMapTypes
 
+            // Armazenar map para uso posterior pelos markers de imagens
+            window.mapInstance = map;
+
             //===================================================================================
 
+        }
+
+        // ============= MARKERS DE IMAGENS DO P4D =============
+        const p4dImageMarkers = [];
+
+        function bearingToNext(lat1, lng1, lat2, lng2) {
+            const d2r = Math.PI / 180;
+            const φ1 = lat1 * d2r, φ2 = lat2 * d2r;
+            const Δλ = (lng2 - lng1) * d2r;
+            const y = Math.sin(Δλ) * Math.cos(φ2);
+            const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+            return Math.atan2(y, x) * 180 / Math.PI;
+        }
+
+        async function plotP4dImagesMarkers() {
+            if (typeof imagensP4d === 'undefined' || !imagensP4d.length || !window.mapInstance) return;
+            if (p4dImageMarkers.length > 0) {
+                p4dImageMarkers.forEach(m => {
+                    m.marker.map = window.mapInstance;
+                });
+                return;
+            }
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+            const corLime = '#32CD32';
+            const corRoyal = '#4169E1';
+            imagensP4d.forEach((img, idx) => {
+                const next = imagensP4d[idx + 1];
+                let angle = 0;
+                if (next) {
+                    angle = bearingToNext(img.lat, img.lng, next.lat, next.lng);
+                } else if (idx > 0) {
+                    const prev = imagensP4d[idx - 1];
+                    angle = bearingToNext(prev.lat, prev.lng, img.lat, img.lng);
+                }
+                const cor = idx === 0 ? corLime : corRoyal;
+
+                const iconFirst = `
+                    <svg fill="#000000" width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="20" height="20" rx="2" stroke="black" stroke-width="1" style="fill: rgba(0, 38, 255, 0.5);"></rect>
+                        <path d="M14.83,9.5,12.69,6.38a.82.82,0,0,0-1.38,0L9.17,9.5A1,1,0,0,0,9.86,11H11v6a1,1,0,0,0,2,0V11h1.14A1,1,0,0,0,14.83,9.5Z" stroke="black" stroke-width="1" style="fill: rgb(0, 242, 255);">
+                        </path>
+                    </svg>
+                `;
+
+                const iconLast = `
+                    <svg fill="#000000" width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="20" height="20" rx="2" stroke="black" stroke-width="1" style="fill: rgba(30, 255, 0, 0.5);"></rect>
+                        <path d="M14.83,9.5,12.69,6.38a.82.82,0,0,0-1.38,0L9.17,9.5A1,1,0,0,0,9.86,11H11v6a1,1,0,0,0,2,0V11h1.14A1,1,0,0,0,14.83,9.5Z" stroke="black" stroke-width="1" style="fill: rgb(255, 251, 0);">
+                        </path>
+                    </svg>
+                `;
+
+                const pin = document.createElement('div');
+                pin.style.width = '40px';
+                pin.style.height = '40px';
+                pin.style.cursor = 'pointer';
+                pin.style.transform = `rotate(${angle}deg)`;
+                pin.innerHTML = idx !== 0 ? iconFirst : iconLast;
+
+                //aqui vai definir o zindex dos markers
+                //o primeiro tem que ser maior que os demais
+                const zIndexDefined = idx !== 0 ? 5 + idx : 10;
+
+                const marker = new AdvancedMarkerElement({
+                    position: { lat: img.lat, lng: img.lng },
+                    map: window.mapInstance,
+                    title: img.nome,
+                    content: pin,
+                    gmpClickable: true,
+                    zIndex: zIndexDefined
+                });
+
+                const urlImagem = img.url_undistorted;
+                const imgUrlEscaped = escapeHtml(urlImagem);
+                const infoContent = document.createElement('div');
+                infoContent.style.minWidth = '220px';
+                infoContent.style.fontFamily = "'Segoe UI', sans-serif";
+                infoContent.innerHTML = `
+                    <div style="padding:10px 0 8px;border-bottom:1px solid #e0e0e0;">
+                        <strong style="font-size:14px;color:#0a1929;">${escapeHtml(img.nome)}</strong>
+                    </div>
+                    <div style="padding:10px 0;">
+                        <a href="${imgUrlEscaped}" target="_blank" rel="noopener" style="display:block;cursor:pointer;">
+                            <img src="${imgUrlEscaped}" alt="" style="max-width:100%;max-height:200px;display:block;border-radius:6px;border:1px solid #ddd;">
+                        </a>
+                    </div>
+                    <div style="padding:10px 0;font-size:12px;color:#546e7a;border-top:1px solid #e0e0e0;background:#f8f9fa;margin:0 -8px -8px -8px;padding:10px 12px;border-radius:0 0 8px 8px;">
+                        <span style="opacity:0.9;">🕐 ${escapeHtml(img.time || '-')}</span>
+                    </div>
+                `;
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: infoContent
+                });
+
+                marker.addListener('click', () => {
+                    p4dImageMarkers.forEach(m => m.infoWindow.close());
+                    infoWindow.open({ anchor: marker, map: window.mapInstance });
+                });
+
+                p4dImageMarkers.push({ marker, infoWindow });
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function hideP4dImagesMarkers() {
+            p4dImageMarkers.forEach(m => {
+                m.marker.map = null;
+                m.infoWindow.close();
+            });
+        }
+
+        function toggleP4dImages(show) {
+            if (show) {
+                plotP4dImagesMarkers();
+            } else {
+                hideP4dImagesMarkers();
+            }
         }
 
         initMap();
@@ -1008,7 +1220,9 @@ echo "<script>let longitude = '$longitude';</script>";
                     toggleRulers(isChecked);
                     break;
                     
-                // Adicione novos cases aqui para futuras camadas
+                case 'images':
+                    toggleP4dImages(isChecked);
+                    break;
                 // case 'poligonos':
                 //     togglePoligonos(isChecked);
                 //     break;

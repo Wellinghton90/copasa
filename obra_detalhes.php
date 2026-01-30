@@ -250,26 +250,248 @@ $videos = listarVideos($videos_path, $obra['cidade']);
 // Caminho dos projetos (fiscalizações)
 $projetos_path = "projetos/" . $obra['cidade'];
 
+/**
+ * Lê o arquivo .p4d (XML) e extrai: quantidade_fotos, inicio_inspecao, fim_inspecao,
+ * angulo_camera (média pitch), latitude_central, longitude_central (médias), altitude_inicial (primeira alt).
+ * altura_media permanece 0.
+ * Retorna array com as chaves preenchidas ou null/0 quando não houver dados.
+ */
+function extrairDadosP4d($caminho_arquivo_p4d) {
+    $padrao = [
+        'quantidade_fotos' => 0,
+        'inicio_inspecao' => null,
+        'fim_inspecao' => null,
+        'altura_media' => 0,
+        'angulo_camera_medio' => 0,
+        'angulo_camera_min' => 0,
+        'angulo_camera_max' => 0,
+        'latitude_central' => 0,
+        'longitude_central' => 0,
+        'altitude_inicial' => 0,
+    ];
+    if (!is_file($caminho_arquivo_p4d)) {
+        return $padrao;
+    }
+    libxml_use_internal_errors(true);
+    $xml = @simplexml_load_file($caminho_arquivo_p4d);
+    if ($xml === false) {
+        return $padrao;
+    }
+    $images = $xml->xpath('//images/image');
+    if (empty($images)) {
+        return $padrao;
+    }
+    $padrao['quantidade_fotos'] = count($images);
+    $times = [];
+    $lats = [];
+    $lngs = [];
+    $alts = [];
+    $pitches = [];
+    foreach ($images as $img) {
+        if (isset($img->time)) {
+            $t = (string) $img->time;
+            if ($t !== '') {
+                $mysqlTime = str_replace(':', '-', substr($t, 0, 10)) . substr($t, 10);
+                $times[] = $mysqlTime;
+            }
+        }
+        if (isset($img->gps)) {
+            $g = $img->gps;
+            if (isset($g['lat'])) $lats[] = (float) $g['lat'];
+            if (isset($g['lng'])) $lngs[] = (float) $g['lng'];
+            if (isset($g['alt'])) $alts[] = (float) $g['alt'];
+        }
+        if (isset($img->ori) && isset($img->ori['pitch'])) {
+            $pitches[] = (float) $img->ori['pitch'];
+        }
+    }
+    if (!empty($times)) {
+        $padrao['inicio_inspecao'] = min($times);
+        $padrao['fim_inspecao'] = max($times);
+    }
+    if (!empty($lats)) $padrao['latitude_central'] = array_sum($lats) / count($lats);
+    if (!empty($lngs)) $padrao['longitude_central'] = array_sum($lngs) / count($lngs);
+    if (!empty($alts)) $padrao['altitude_inicial'] = $alts[0];
+    if (!empty($pitches)) {
+        $padrao['angulo_camera_medio'] = array_sum($pitches) / count($pitches);
+        $padrao['angulo_camera_min'] = min($pitches);
+        $padrao['angulo_camera_max'] = max($pitches);
+    }
+    return $padrao;
+}
+
 // Criar diretório se não existir
 if (!file_exists($projetos_path)) {
     mkdir($projetos_path, 0755, true);
 }
 
-// Listar pastas de projetos (apenas primeiro nível)
-$projetos = [];
+// ========== ETAPA 1: Ler a pasta e montar o JSON com os dados dos projetos ==========
+$projetos_json = [];
+$base_projetos = 'projetos/' . $obra['cidade'] . '/'; // pasta raiz para os caminhos
 if (is_dir($projetos_path)) {
     $items = scandir($projetos_path);
     foreach ($items as $item) {
-        if ($item != '.' && $item != '..') {
-            $item_path = $projetos_path . '/' . $item;
-            if (is_dir($item_path)) {
-                $projetos[] = [
-                    'nome' => $item,
-                    'data' => date('d/m/Y H:i', filemtime($item_path))
-                ];
-            }
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+        $item_path = $projetos_path . '/' . $item;
+        if (!is_dir($item_path)) {
+            continue;
+        }
+        $nome_projeto = $item;
+        $arquivo_p4d = $projetos_path . '/' . $nome_projeto . '.p4d';
+        $caminho_p4d = file_exists($arquivo_p4d) ? $base_projetos . $nome_projeto . '.p4d' : '';
+        // data_processamento = data de criação do arquivo .p4d (fallback: data de modificação da pasta do projeto)
+        $data_processamento = file_exists($arquivo_p4d)
+            ? date('Y-m-d H:i:s', filectime($arquivo_p4d))
+            : date('Y-m-d H:i:s', filemtime($item_path));
+        $caminho_ortofoto = $base_projetos . $nome_projeto . '/3_dsm_ortho/2_mosaic/google_tiles';
+        $caminho_3d = $base_projetos . $nome_projeto . '/2_densification/point_cloud/potree';
+
+        $dados_p4d = [
+            'quantidade_fotos' => 0,
+            'inicio_inspecao' => null,
+            'fim_inspecao' => null,
+            'altura_media' => 0,
+            'angulo_camera_medio' => 0,
+            'angulo_camera_min' => 0,
+            'angulo_camera_max' => 0,
+            'latitude_central' => 0,
+            'longitude_central' => 0,
+            'altitude_inicial' => 0,
+        ];
+        if (file_exists($arquivo_p4d)) {
+            $dados_p4d = extrairDadosP4d($arquivo_p4d);
+        }
+
+        $projetos_json[] = [
+            'data_processamento' => $data_processamento,
+            'nome_projeto' => $nome_projeto,
+            'caminho_p4d' => $caminho_p4d,
+            'caminho_ortofoto' => $caminho_ortofoto,
+            'caminho_3d' => $caminho_3d,
+            'quantidade_fotos' => $dados_p4d['quantidade_fotos'],
+            'inicio_inspecao' => $dados_p4d['inicio_inspecao'],
+            'fim_inspecao' => $dados_p4d['fim_inspecao'],
+            'altura_media' => $dados_p4d['altura_media'],
+            'angulo_camera_medio' => $dados_p4d['angulo_camera_medio'],
+            'angulo_camera_min' => $dados_p4d['angulo_camera_min'],
+            'angulo_camera_max' => $dados_p4d['angulo_camera_max'],
+            'latitude_central' => $dados_p4d['latitude_central'],
+            'longitude_central' => $dados_p4d['longitude_central'],
+            'altitude_inicial' => $dados_p4d['altitude_inicial'],
+        ];
+    }
+}
+
+//var_dump($projetos_json);
+
+// ========== ETAPA 2: Ver cada objeto do JSON na tabela; se não tiver, adicionar; se tiver, atualizar dados do .p4d ==========
+try {
+    $stmt_existe = $conn->prepare("SELECT nome_projeto FROM gemeo_digital WHERE cidade = ? AND nome_projeto = ?");
+    $stmt_insere = $conn->prepare("
+        INSERT INTO gemeo_digital (
+            data_processamento, inicio_inspecao, fim_inspecao, nome_projeto,
+            caminho_p4d, caminho_ortofoto, caminho_3d, quantidade_fotos,
+            altura_media, angulo_camera_medio, angulo_camera_min, angulo_camera_max,
+            latitude_central, longitude_central, altitude_inicial, cidade, visibilidade
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt_atualiza = $conn->prepare("
+        UPDATE gemeo_digital SET
+            inicio_inspecao = ?, fim_inspecao = ?, quantidade_fotos = ?,
+            altura_media = ?, angulo_camera_medio = ?, angulo_camera_min = ?, angulo_camera_max = ?,
+            latitude_central = ?, longitude_central = ?, altitude_inicial = ?,
+            visibilidade = 1
+        WHERE cidade = ? AND nome_projeto = ?
+    ");
+    $nomes_na_pasta = [];
+    foreach ($projetos_json as $obj) {
+        $nomes_na_pasta[] = $obj['nome_projeto'];
+        $stmt_existe->execute([$obra['cidade'], $obj['nome_projeto']]);
+        if ($stmt_existe->fetch() === false) {
+            $stmt_insere->execute([
+                $obj['data_processamento'],
+                $obj['inicio_inspecao'],
+                $obj['fim_inspecao'],
+                $obj['nome_projeto'],
+                $obj['caminho_p4d'],
+                $obj['caminho_ortofoto'],
+                $obj['caminho_3d'],
+                $obj['quantidade_fotos'],
+                $obj['altura_media'],
+                $obj['angulo_camera_medio'],
+                $obj['angulo_camera_min'],
+                $obj['angulo_camera_max'],
+                $obj['latitude_central'],
+                $obj['longitude_central'],
+                $obj['altitude_inicial'],
+                $obra['cidade'],
+                1,
+            ]);
+        } else {
+            $stmt_atualiza->execute([
+                $obj['inicio_inspecao'],
+                $obj['fim_inspecao'],
+                $obj['quantidade_fotos'],
+                $obj['altura_media'],
+                $obj['angulo_camera_medio'],
+                $obj['angulo_camera_min'],
+                $obj['angulo_camera_max'],
+                $obj['latitude_central'],
+                $obj['longitude_central'],
+                $obj['altitude_inicial'],
+                $obra['cidade'],
+                $obj['nome_projeto'],
+            ]);
         }
     }
+    // Soft delete: projetos que não estão mais na pasta ficam com visibilidade = 0
+    if (count($nomes_na_pasta) > 0) {
+        $placeholders = implode(',', array_fill(0, count($nomes_na_pasta), '?'));
+        $stmt_ocultar = $conn->prepare("UPDATE gemeo_digital SET visibilidade = 0 WHERE cidade = ? AND nome_projeto NOT IN ($placeholders)");
+        $stmt_ocultar->execute(array_merge([$obra['cidade']], $nomes_na_pasta));
+    } else {
+        $stmt_ocultar = $conn->prepare("UPDATE gemeo_digital SET visibilidade = 0 WHERE cidade = ?");
+        $stmt_ocultar->execute([$obra['cidade']]);
+    }
+} catch (PDOException $e) {
+    // Tabela pode não existir; segue para exibir lista vazia
+    echo "Erro ao inserir projetos no banco de dados: " . $e->getMessage();
+}
+
+// ========== ETAPA 3: Abrir a página lendo do banco (somente visibilidade = 1) ==========
+$projetos = [];
+try {
+    $stmt = $conn->prepare("
+        SELECT id_gemeo, data_processamento, nome_projeto, inicio_inspecao, fim_inspecao, quantidade_fotos,
+               angulo_camera_medio, angulo_camera_min, angulo_camera_max,
+               latitude_central, longitude_central, altitude_inicial
+        FROM gemeo_digital
+        WHERE cidade = ? AND visibilidade = 1
+        ORDER BY data_processamento DESC
+    ");
+    $stmt->execute([$obra['cidade']]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $projetos[] = [
+            'nome' => $row['nome_projeto'],
+            'data_processamento' => date('d/m/Y H:i', strtotime($row['data_processamento'])),
+            'data_processamento_order' => strtotime($row['data_processamento']),
+            'inicio_inspecao' => $row['inicio_inspecao'] ? date('d/m/Y H:i', strtotime($row['inicio_inspecao'])) : '—',
+            'inicio_inspecao_order' => $row['inicio_inspecao'] ? strtotime($row['inicio_inspecao']) : 0,
+            'fim_inspecao' => $row['fim_inspecao'] ? date('d/m/Y H:i', strtotime($row['fim_inspecao'])) : '—',
+            'fim_inspecao_order' => $row['fim_inspecao'] ? strtotime($row['fim_inspecao']) : 0,
+            'quantidade_fotos' => (int) $row['quantidade_fotos'],
+            'angulo_camera_medio' => $row['angulo_camera_medio'] !== null ? (float) $row['angulo_camera_medio'] : '—',
+            'angulo_camera_min' => $row['angulo_camera_min'] !== null ? (float) $row['angulo_camera_min'] : '—',
+            'angulo_camera_max' => $row['angulo_camera_max'] !== null ? (float) $row['angulo_camera_max'] : '—',
+            'latitude_central' => $row['latitude_central'] !== null ? (float) $row['latitude_central'] : '—',
+            'longitude_central' => $row['longitude_central'] !== null ? (float) $row['longitude_central'] : '—',
+            'altitude_inicial' => $row['altitude_inicial'] !== null ? (float) $row['altitude_inicial'] : '—',
+        ];
+    }
+} catch (PDOException $e) {
+    $projetos = [];
 }
 
 // Logout
@@ -684,12 +906,60 @@ if (isset($_GET['logout'])) {
         .table thead th.sorting_asc,
         .table thead th.sorting_desc {
             cursor: pointer;
+            padding-right: 26px;
+            position: relative;
+        }
+        /* Setas de ordenação (flechinhas) no cabeçalho */
+        .table thead th.sorting::after {
+            content: "\f0dc";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.4;
+            font-size: 0.75rem;
+        }
+        .table thead th.sorting_asc::after {
+            content: "\f0de";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 1;
+            color: var(--accent-color);
+            font-size: 0.75rem;
+        }
+        .table thead th.sorting_desc::after {
+            content: "\f0dd";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 1;
+            color: var(--accent-color);
+            font-size: 0.75rem;
         }
 
         .table thead th.sorting:hover,
         .table thead th.sorting_asc:hover,
         .table thead th.sorting_desc:hover {
             background: rgba(0, 188, 212, 0.2);
+        }
+        .table thead th.sorting_asc,
+        .table thead th.sorting_desc {
+            background: rgba(0, 188, 212, 0.25);
+        }
+        /* Tabela projetos: só nossa seta (::after), sem ícone padrão do DataTables */
+        #projetosTable thead th.sorting,
+        #projetosTable thead th.sorting_asc,
+        #projetosTable thead th.sorting_desc {
+            background-image: none !important;
         }
 
         .table tbody tr {
@@ -707,6 +977,16 @@ if (isset($_GET['logout'])) {
             vertical-align: middle;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-align: left;
+        }
+
+        /* Tabela Fiscalizações: todas as colunas centralizadas (vertical e horizontal) */
+        #projetosTable thead th,
+        #projetosTable tbody td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        #projetosTable tbody td .btn {
+            display: inline-block;
         }
 
         /* Configurações de alinhamento são controladas pelo DataTables com className específicas */
@@ -1342,19 +1622,23 @@ if (isset($_GET['logout'])) {
                         <table class="table" id="projetosTable">
                             <thead>
                                 <tr>
-                                    <th>Nome do Projeto</th>
                                     <th style="width: 200px;">Modelo 3D</th>
                                     <th style="width: 200px;">Modelo 2D</th>
-                                    <th style="width: 150px;">Data</th>
+                                    <th style="width: 150px;">Data Processamento</th>
+                                    <th style="width: 150px;">Início Inspeção</th>
+                                    <th style="width: 150px;">Fim Inspeção</th>
+                                    <th style="width: 120px;">Quantidade de fotos</th>
+                                    <th style="width: 100px;">Ângulo câmera (médio)</th>
+                                    <th style="width: 90px;">Ângulo câmera (mín)</th>
+                                    <th style="width: 90px;">Ângulo câmera (máx)</th>
+                                    <th style="width: 120px;">Latitude central</th>
+                                    <th style="width: 120px;">Longitude central</th>
+                                    <th style="width: 100px;">Altitude inicial</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($projetos as $projeto): ?>
                                     <tr>
-                                        <td>
-                                            <i class="fas fa-folder me-2"></i>
-                                            <?= htmlspecialchars($projeto['nome']) ?>
-                                        </td>
                                         <td>
                                             <a target="_blank" href="nuvem.php?projeto=<?= urlencode($projeto['nome']) ?>&cidade=<?= urlencode($obra['cidade']) ?>" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-cube me-2"></i>
@@ -1362,13 +1646,21 @@ if (isset($_GET['logout'])) {
                                             </a>
                                         </td>
                                         <td>
-
-                                            <a target="_blank" href="desenhos_detalhes.php?id=<?= urlencode($obra_id) ?>&cidade=<?= urlencode($obra['cidade']) ?>&lat=<?= urlencode($obra['latitude']) ?>&lng=<?= urlencode($obra['longitude']) ?>&projeto=<?= urlencode($projeto['nome']) ?>/3_dsm_ortho/2_mosaic/google_tiles" class="btn btn-sm btn-outline-info">
+                                            <a target="_blank" href="desenhos_detalhes.php?id=<?= urlencode($obra_id) ?>&cidade=<?= urlencode($obra['cidade']) ?>&projeto=<?= urlencode($projeto['nome']) ?>" class="btn btn-sm btn-outline-info">
                                                 <i class="fas fa-map me-2"></i>
                                                 Ortofoto
                                             </a>
                                         </td>
-                                        <td><?= $projeto['data'] ?></td>
+                                        <td data-order="<?= (int) $projeto['data_processamento_order'] ?>"><?= htmlspecialchars($projeto['data_processamento']) ?></td>
+                                        <td data-order="<?= (int) $projeto['inicio_inspecao_order'] ?>"><?= htmlspecialchars($projeto['inicio_inspecao']) ?></td>
+                                        <td data-order="<?= (int) $projeto['fim_inspecao_order'] ?>"><?= htmlspecialchars($projeto['fim_inspecao']) ?></td>
+                                        <td><?= (int) $projeto['quantidade_fotos'] ?></td>
+                                        <td><?= is_numeric($projeto['angulo_camera_medio']) ? number_format($projeto['angulo_camera_medio'], 2, ',', '.') : $projeto['angulo_camera_medio'] ?></td>
+                                        <td><?= is_numeric($projeto['angulo_camera_min']) ? number_format($projeto['angulo_camera_min'], 2, ',', '.') : $projeto['angulo_camera_min'] ?></td>
+                                        <td><?= is_numeric($projeto['angulo_camera_max']) ? number_format($projeto['angulo_camera_max'], 2, ',', '.') : $projeto['angulo_camera_max'] ?></td>
+                                        <td><?= is_numeric($projeto['latitude_central']) ? number_format($projeto['latitude_central'], 6, ',', '.') : $projeto['latitude_central'] ?></td>
+                                        <td><?= is_numeric($projeto['longitude_central']) ? number_format($projeto['longitude_central'], 6, ',', '.') : $projeto['longitude_central'] ?></td>
+                                        <td><?= is_numeric($projeto['altitude_inicial']) ? number_format($projeto['altitude_inicial'], 2, ',', '.') : $projeto['altitude_inicial'] ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -1531,6 +1823,14 @@ if (isset($_GET['logout'])) {
                 });
             }
 
+            // Ordenação por data-order (timestamp numérico): lê o atributo e converte em número para ordenar
+            $.fn.dataTable.ext.order['dom-data-order'] = function(settings, col) {
+                var api = new $.fn.dataTable.Api(settings);
+                return api.column(col, { order: 'index' }).nodes().map(function(td) {
+                    return parseInt($(td).attr('data-order'), 10) || 0;
+                });
+            };
+
             // Inicializar tabela de fiscalizações/projetos se existir
             if ($('#projetosTable').length) {
                 projetosTable = $('#projetosTable').DataTable({
@@ -1546,8 +1846,13 @@ if (isset($_GET['logout'])) {
                         [5, 10, 25, 50, "Todos"]
                     ],
                     order: [
-                        [3, 'desc']
-                    ] // Ordenar pela coluna de Data (índice 3) em ordem decrescente
+                        [2, 'desc']
+                    ],
+                    columnDefs: [
+                        { className: 'text-center', targets: '_all' },
+                        { orderDataType: 'dom-data-order', targets: [2, 3, 4] },
+                        { type: 'num', targets: [5, 6, 7, 8, 9, 10, 11] }
+                    ]
                 });
             }
 
