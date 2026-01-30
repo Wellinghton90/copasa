@@ -1022,29 +1022,44 @@ if (isset($_GET['logout'])) {
     <div class="container-fluid">
 
         <!-- Dados da Obra -->
-        <div class="dados-card">
-            <h3>
-                <i class="fas fa-clipboard-list"></i>
-                Informações da obra de <?= htmlspecialchars($obra['cidade']) ?>
-            </h3>
+        <div id="dados_obra_vez" class="dados-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                <h3 class="mb-0">
+                    <i class="fas fa-clipboard-list"></i>
+                    Informações da obra de <?= htmlspecialchars($obra['cidade']) ?>
+                </h3>
+                <div id="botoesDadosObra">
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="btnEditarDadosObra" onclick="entrarModoEdicaoDadosObra()" title="Editar dados da obra">
+                        <i class="fas fa-edit me-1"></i> Editar
+                    </button>
+                    <span id="botoesSalvarCancelar" style="display: none;">
+                        <button type="button" class="btn btn-success btn-sm me-1" id="btnSalvarDadosObra" onclick="salvarDadosObra()" title="Salvar alterações">
+                            <i class="fas fa-save me-1"></i> Salvar
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnCancelarEdicaoObra" onclick="sairModoEdicaoDadosObra()" title="Cancelar edição">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </button>
+                    </span>
+                </div>
+            </div>
 
-            <form>
+            <form id="formDadosObra">
                 <!-- Campos sempre visíveis -->
                 <div class="row">
                     <div class="col-md-8 mb-3">
                         <label class="form-label">Nome da Obra</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['nome']) ?>" readonly>
+                        <input type="text" name="nome" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['nome']) ?>" readonly>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Status</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($obra['status']) ?>" readonly>
+                        <input type="text" name="status" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['status']) ?>" readonly>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Descrição</label>
-                        <textarea class="form-control" rows="3" readonly><?= htmlspecialchars($obra['descricao'] ?? '') ?></textarea>
+                        <textarea name="descricao" class="form-control campo-dados-obra" rows="3" readonly><?= htmlspecialchars($obra['descricao'] ?? '') ?></textarea>
                     </div>
                 </div>
 
@@ -1054,67 +1069,67 @@ if (isset($_GET['logout'])) {
                     <div class="row">
                         <div class="col-md-8 mb-3">
                             <label class="form-label">Localização</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['localizacao'] ?? '') ?>" readonly>
+                            <input type="text" name="localizacao" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['localizacao'] ?? '') ?>" readonly>
                         </div>
                         <div class="col-md-2 mb-3">
                             <label class="form-label">Latitude</label>
-                            <input id="input_lat" type="text" class="form-control" value="<?= htmlspecialchars($obra['latitude'] ?? '-') ?>" readonly>
+                            <input id="input_lat" type="text" name="latitude" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['latitude'] ?? '-') ?>" readonly>
                         </div>
                         <div class="col-md-2 mb-3">
                             <label class="form-label">Longitude</label>
-                            <input id="input_lng" type="text" class="form-control" value="<?= htmlspecialchars($obra['longitude'] ?? '-') ?>" readonly>
+                            <input id="input_lng" type="text" name="longitude" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['longitude'] ?? '-') ?>" readonly>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Cidade</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['cidade']) ?>" readonly>
+                            <input type="text" name="cidade" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['cidade']) ?>" readonly>
                         </div>
                         <div class="col-md-2 mb-3">
                             <label class="form-label">UF</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['uf']) ?>" readonly>
+                            <input type="text" name="uf" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['uf']) ?>" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Situação</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['situacao']) ?>" readonly>
+                            <input type="text" name="situacao" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['situacao']) ?>" readonly>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Data de Início</label>
-                            <input type="text" class="form-control" value="<?= $obra['data_inicio'] ? date('d/m/Y', strtotime($obra['data_inicio'])) : '-' ?>" readonly>
+                            <input type="text" name="data_inicio" class="form-control campo-dados-obra" data-original="<?= $obra['data_inicio'] ? date('Y-m-d', strtotime($obra['data_inicio'])) : '' ?>" value="<?= $obra['data_inicio'] ? date('d/m/Y', strtotime($obra['data_inicio'])) : '-' ?>" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Data Prevista</label>
-                            <input type="text" class="form-control" value="<?= $obra['data_prevista'] ? date('d/m/Y', strtotime($obra['data_prevista'])) : '-' ?>" readonly>
+                            <input type="text" name="data_prevista" class="form-control campo-dados-obra" data-original="<?= $obra['data_prevista'] ? date('Y-m-d', strtotime($obra['data_prevista'])) : '' ?>" value="<?= $obra['data_prevista'] ? date('d/m/Y', strtotime($obra['data_prevista'])) : '-' ?>" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Data de Conclusão</label>
-                            <input type="text" class="form-control" value="<?= $obra['data_conclusao'] ? date('d/m/Y', strtotime($obra['data_conclusao'])) : '-' ?>" readonly>
+                            <input type="text" name="data_conclusao" class="form-control campo-dados-obra" data-original="<?= $obra['data_conclusao'] ? date('Y-m-d', strtotime($obra['data_conclusao'])) : '' ?>" value="<?= $obra['data_conclusao'] ? date('d/m/Y', strtotime($obra['data_conclusao'])) : '-' ?>" readonly>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Orçamento Total</label>
-                            <input type="text" class="form-control" value="<?= $obra['orcamento_total'] ? 'R$ ' . number_format($obra['orcamento_total'], 2, ',', '.') : '-' ?>" readonly>
+                            <input type="text" name="orcamento_total" class="form-control campo-dados-obra" data-original="<?= $obra['orcamento_total'] ?? '' ?>" value="<?= $obra['orcamento_total'] ? 'R$ ' . number_format($obra['orcamento_total'], 2, ',', '.') : '-' ?>" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Orçamento Utilizado</label>
-                            <input type="text" class="form-control" value="<?= $obra['orcamento_utilizado'] ? 'R$ ' . number_format($obra['orcamento_utilizado'], 2, ',', '.') : '-' ?>" readonly>
+                            <input type="text" name="orcamento_utilizado" class="form-control campo-dados-obra" data-original="<?= $obra['orcamento_utilizado'] ?? '' ?>" value="<?= $obra['orcamento_utilizado'] ? 'R$ ' . number_format($obra['orcamento_utilizado'], 2, ',', '.') : '-' ?>" readonly>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Responsável</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($obra['responsavel'] ?? '-') ?>" readonly>
+                            <input type="text" name="responsavel" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['responsavel'] ?? '-') ?>" readonly>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Observações</label>
-                            <textarea class="form-control" rows="3" readonly><?= htmlspecialchars($obra['observacoes'] ?? '') ?></textarea>
+                            <textarea name="observacoes" class="form-control campo-dados-obra" rows="3" readonly><?= htmlspecialchars($obra['observacoes'] ?? '') ?></textarea>
                         </div>
                     </div>
                 </div>
@@ -1149,7 +1164,7 @@ if (isset($_GET['logout'])) {
             </li>
             <button class="nav-link" id="timeline_tiles" onclick="window.location.href='timeline_tiles.php?cidade=<?= $obra['cidade'] ?>'">
                 <i class="fa-solid fa-calendar-days me-2"></i>
-                Timeline Obra
+                Timeline Ortofoto
             </button>
         </ul>
 
@@ -1697,6 +1712,66 @@ if (isset($_GET['logout'])) {
                     block: 'start'
                 });
             }
+        }
+
+        // Snapshot dos valores ao entrar em edição (para cancelar)
+        let snapshotDadosObra = null;
+
+        function entrarModoEdicaoDadosObra() {
+            const campos = document.querySelectorAll('#formDadosObra .campo-dados-obra');
+            snapshotDadosObra = {};
+            campos.forEach(function(el) {
+                el.removeAttribute('readonly');
+                el.classList.add('border', 'border-primary');
+                snapshotDadosObra[el.name] = el.value;
+                // Campos de data: permitir edição em formato dd/mm/yyyy
+                if (el.getAttribute('data-original')) {
+                    el.placeholder = 'dd/mm/aaaa';
+                }
+            });
+            document.getElementById('btnEditarDadosObra').style.display = 'none';
+            document.getElementById('botoesSalvarCancelar').style.display = 'inline';
+        }
+
+        function sairModoEdicaoDadosObra() {
+            const campos = document.querySelectorAll('#formDadosObra .campo-dados-obra');
+            campos.forEach(function(el) {
+                el.setAttribute('readonly', 'readonly');
+                el.classList.remove('border', 'border-primary');
+                if (snapshotDadosObra && snapshotDadosObra[el.name] !== undefined) {
+                    el.value = snapshotDadosObra[el.name];
+                }
+            });
+            document.getElementById('btnEditarDadosObra').style.display = 'inline';
+            document.getElementById('botoesSalvarCancelar').style.display = 'none';
+            snapshotDadosObra = null;
+        }
+
+        function salvarDadosObra() {
+            const form = document.getElementById('formDadosObra');
+            const formData = new FormData(form);
+            formData.append('obra_id', '<?= $obra_id ?>');
+
+            showLoading('Salvando alterações...');
+
+            fetch('atualizar_obra.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+                hideLoading();
+                if (res.ok) {
+                    alert(res.msg);
+                    window.location.reload();
+                } else {
+                    alert('Erro: ' + (res.msg || 'Não foi possível salvar.'));
+                }
+            })
+            .catch(function(err) {
+                hideLoading();
+                alert('Erro ao enviar: ' + err.message);
+            });
         }
 
         // Mostrar loading ao clicar em links de navegação
