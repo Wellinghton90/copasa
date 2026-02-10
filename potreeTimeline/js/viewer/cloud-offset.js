@@ -6,14 +6,14 @@ const editedOffsets = {};
 
 /**
  * @param {string} projectId
- * @param {Array<{ id: string, offset?: number[] }>} projetosDisponiveis
+ * @param {Array<{ id: string, offset?: number[] }>} availableProjects
  * @returns {[number, number, number]}
  */
-export function getOffsetForProject(projectId, projetosDisponiveis) {
+export function getOffsetForProject(projectId, availableProjects) {
     if (editedOffsets[projectId]) return editedOffsets[projectId];
-    const projeto = projetosDisponiveis.find((p) => p.id === projectId);
-    return (projeto && Array.isArray(projeto.offset) && projeto.offset.length >= 3)
-        ? projeto.offset
+    const project = availableProjects.find((p) => p.id === projectId);
+    return (project && Array.isArray(project.offset) && project.offset.length >= 3)
+        ? project.offset
         : [0, 0, 0];
 }
 

@@ -42,6 +42,7 @@ function parseMoeda($str) {
 
 $nome = trim($_POST['nome'] ?? '');
 $status = trim($_POST['status'] ?? '');
+$tipo_obra = trim($_POST['tipo_obra'] ?? '');
 $descricao = trim($_POST['descricao'] ?? '');
 $localizacao = trim($_POST['localizacao'] ?? '');
 $latitude = trim($_POST['latitude'] ?? '') ?: null;
@@ -64,14 +65,14 @@ if ($nome === '') {
 
 try {
     $sql = "UPDATE obras SET
-        nome = ?, status = ?, descricao = ?, localizacao = ?,
+        nome = ?, status = ?, tipo_obra = ?, descricao = ?, localizacao = ?,
         latitude = ?, longitude = ?, cidade = ?, uf = ?, situacao = ?,
         data_inicio = ?, data_prevista = ?, data_conclusao = ?,
         orcamento_total = ?, orcamento_utilizado = ?, responsavel = ?, observacoes = ?
         WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([
-        $nome, $status, $descricao, $localizacao,
+        $nome, $status, $tipo_obra, $descricao, $localizacao,
         $latitude, $longitude, $cidade, $uf, $situacao,
         $data_inicio, $data_prevista, $data_conclusao,
         $orcamento_total, $orcamento_utilizado, $responsavel, $observacoes,

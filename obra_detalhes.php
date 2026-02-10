@@ -57,6 +57,22 @@ if (is_dir($documentos_path)) {
     }
 }
 
+// Riscos da obra (agrupados por grupo_tipo para o mapa de risco)
+$riscos_por_grupo = [];
+try {
+    $stmt_riscos = $conn->prepare("SELECT id_risco_obra, grupo_tipo, grau_risco, pergunta, resposta, evidencia_fotografica, nota_risco, peso FROM riscos_obra WHERE cidade = ? ORDER BY grupo_tipo, id_risco_obra");
+    $stmt_riscos->execute([$obra['cidade']]);
+    while ($row = $stmt_riscos->fetch(PDO::FETCH_ASSOC)) {
+        $grupo = $row['grupo_tipo'] ?? 'Outros';
+        if (!isset($riscos_por_grupo[$grupo])) {
+            $riscos_por_grupo[$grupo] = [];
+        }
+        $riscos_por_grupo[$grupo][] = $row;
+    }
+} catch (PDOException $e) {
+    // Tabela pode não existir; mantém array vazio
+}
+
 // Caminho dos vídeos
 $videos_path = "evidencias/" . $obra['cidade'] . "/Videos";
 
@@ -1256,6 +1272,10 @@ if (isset($_GET['logout'])) {
                 font-size: 1rem;
             }
         }
+
+        .accordion-item {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
     </style>
 </head>
 
@@ -1326,13 +1346,21 @@ if (isset($_GET['logout'])) {
             <form id="formDadosObra">
                 <!-- Campos sempre visíveis -->
                 <div class="row">
-                    <div class="col-md-8 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label">Nome da Obra</label>
                         <input type="text" name="nome" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['nome']) ?>" readonly>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label class="form-label">Status</label>
                         <input type="text" name="status" class="form-control campo-dados-obra" value="<?= htmlspecialchars($obra['status']) ?>" readonly>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Tipo da Obra</label>
+                        <select name="tipo_obra" class="form-control campo-dados-obra" disabled>
+                            <option value="">— Selecione —</option>
+                            <option value="Estacionária"<?= (isset($obra['tipo_obra']) && $obra['tipo_obra'] === 'Estacionária') ? ' selected' : '' ?>>Estacionária</option>
+                            <option value="Linear"<?= (isset($obra['tipo_obra']) && $obra['tipo_obra'] === 'Linear') ? ' selected' : '' ?>>Linear</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1442,9 +1470,19 @@ if (isset($_GET['logout'])) {
                     Gêmeos Digitais
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="riscos-tab" data-bs-toggle="tab" data-bs-target="#riscos" type="button" role="tab">
+                    <i class="fa-solid fa-chart-line me-2"></i>
+                    Mapa de Riscos
+                </button>
+            </li>
             <button class="nav-link" id="timeline_tiles" onclick="window.location.href='timeline_tiles.php?cidade=<?= $obra['cidade'] ?>'">
                 <i class="fa-solid fa-calendar-days me-2"></i>
                 Timeline Ortofoto
+            </button>
+            <button class="nav-link" id="timeline_4d" onclick="window.location.href='potreeTimeline/timeline.php?cidade=<?= $obra['cidade'] ?>'">
+                <i class="fa-solid fa-calendar-days me-2"></i>
+                Timeline 4D
             </button>
         </ul>
 
@@ -1671,6 +1709,108 @@ if (isset($_GET['logout'])) {
                         <i class="fas fa-clipboard-check"></i>
                         <h4>Nenhuma fiscalização encontrada</h4>
                         <p>Não há projetos cadastrados para esta cidade.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Aba Riscos -->
+            <div class="tab-pane fade" id="riscos" role="tabpanel">
+                <div class="mb-4">
+                    <h4 class="mb-0">
+                        <i class="fa-solid fa-chart-line me-2"></i>
+                        Mapa de Riscos
+                    </h4>
+                </div>
+
+                <?php if (empty($riscos_por_grupo)): ?>
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Nenhum registro de risco cadastrado para esta obra.
+                    </div>
+                <?php else:
+                    // Fórmula: pontos = nota × peso (grau_risco é texto: Baixo, Médio, Alto)
+                    // 5-84 vermelho | 85-166 amarelo | 167+ verde
+                    $corPorPontos = function($pontos) {
+                        $p = (int) $pontos;
+                        if ($p <= 84) return ['fundo' => 'rgba(248, 215, 218, 1)', 'badge' => 'bg-danger'];
+                        if ($p <= 166) return ['fundo' => 'rgba(255, 243, 205, 1)', 'badge' => 'bg-warning text-dark'];
+                        return ['fundo' => 'rgba(212, 237, 218, 1)', 'badge' => 'bg-success'];
+                    };
+                ?>
+                    <div class="accordion" id="accordionRiscos">
+                        <?php
+                        $primeiro = false;
+                        foreach ($riscos_por_grupo as $grupo_tipo => $itens):
+                            $total_pontos = 0;
+                            foreach ($itens as $r) {
+                                $n = isset($r['nota_risco']) && $r['nota_risco'] !== '' && $r['nota_risco'] !== null ? (float)$r['nota_risco'] : 0;
+                                $p = isset($r['peso']) && $r['peso'] !== '' && $r['peso'] !== null ? (int)$r['peso'] : 0;
+                                $total_pontos += $n * $p;
+                            }
+                            $titulo_cores = $corPorPontos($total_pontos);
+                            $id_collapse = 'risco-' . preg_replace('/[^a-z0-9]/i', '-', $grupo_tipo) . '-' . bin2hex(random_bytes(4));
+                            $expandido = $primeiro ? 'show' : '';
+                            $colapsado = $primeiro ? '' : 'collapsed';
+                            $aria_expanded = $primeiro ? 'true' : 'false';
+                            $primeiro = false;
+                        ?>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button <?= $colapsado ?> text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#<?= htmlspecialchars($id_collapse) ?>" aria-expanded="<?= $aria_expanded ?>" aria-controls="<?= htmlspecialchars($id_collapse) ?>" style="background-color: <?= $titulo_cores['fundo'] ?>;">
+                                        <b><?= htmlspecialchars($grupo_tipo) ?></b>
+                                        <span class="badge <?= $titulo_cores['badge'] ?> ms-2 opacity-100"><?= (int)$total_pontos ?> pts</span>
+                                    </button>
+                                </h2>
+                                <div id="<?= htmlspecialchars($id_collapse) ?>" class="accordion-collapse collapse <?= $expandido ?>" data-bs-parent="#accordionRiscos">
+                                    <div class="accordion-body">
+                                        <?php foreach ($itens as $idx => $r):
+                                            $grau_txt = trim($r['grau_risco'] ?? '');
+                                            $nota = isset($r['nota_risco']) && $r['nota_risco'] !== '' && $r['nota_risco'] !== null ? (float)$r['nota_risco'] : 0;
+                                            $peso = isset($r['peso']) && $r['peso'] !== '' && $r['peso'] !== null ? (int)$r['peso'] : 0;
+                                            $pontos = $nota * $peso;
+                                            $evidencia = trim($r['evidencia_fotografica'] ?? '');
+                                        ?>
+                                            <div class="card mb-3 border border-dark border-2" style="background-color: <?= $titulo_cores['fundo'] ?>;">
+                                                <div class="card-body">
+                                                    <h6 class="card-subtitle mb-2 text-muted">
+                                                        <i class="fas fa-question-circle me-1"></i> Pergunta
+                                                    </h6>
+                                                    <p class="card-text mb-2"><?= nl2br(htmlspecialchars($r['pergunta'] ?? '-')) ?></p>
+                                                    <h6 class="card-subtitle mb-2 text-muted mt-2">
+                                                        <i class="fas fa-comment-alt me-1"></i> Resposta
+                                                    </h6>
+                                                    <p class="card-text mb-2"><?= nl2br(htmlspecialchars($r['resposta'] ?? '-')) ?></p>
+                                                    <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                                                        <span class="text-muted small">Pontos desta pergunta:</span>
+                                                        <span class="badge bg-secondary"><?= (int)$pontos ?> pts</span>
+                                                        <?php if ($grau_txt !== ''): ?>
+                                                            <span class="text-muted small">Grau:</span>
+                                                            <span class="badge bg-secondary"><?= htmlspecialchars($grau_txt) ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if ($nota > 0): ?>
+                                                            <span class="text-muted small">Nota:</span>
+                                                            <span class="badge bg-secondary"><?= htmlspecialchars(number_format($nota, 1, ',', '.')) ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if ($peso > 0): ?>
+                                                            <span class="text-muted small">Peso:</span>
+                                                            <span class="badge bg-dark"><?= $peso ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <?php if ($evidencia !== ''): ?>
+                                                        <div class="mt-2">
+                                                            <span class="text-muted small">Evidência fotográfica:</span>
+                                                            <p class="mb-0 small">
+                                                                <a href="<?= htmlspecialchars($evidencia) ?>" class="text-primary" target="_blank" rel="noopener"><?= htmlspecialchars($evidencia) ?></a>
+                                                            </p>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -2026,7 +2166,11 @@ if (isset($_GET['logout'])) {
             const campos = document.querySelectorAll('#formDadosObra .campo-dados-obra');
             snapshotDadosObra = {};
             campos.forEach(function(el) {
-                el.removeAttribute('readonly');
+                if (el.tagName === 'SELECT') {
+                    el.removeAttribute('disabled');
+                } else {
+                    el.removeAttribute('readonly');
+                }
                 el.classList.add('border', 'border-primary');
                 snapshotDadosObra[el.name] = el.value;
                 // Campos de data: permitir edição em formato dd/mm/yyyy
@@ -2041,7 +2185,11 @@ if (isset($_GET['logout'])) {
         function sairModoEdicaoDadosObra() {
             const campos = document.querySelectorAll('#formDadosObra .campo-dados-obra');
             campos.forEach(function(el) {
-                el.setAttribute('readonly', 'readonly');
+                if (el.tagName === 'SELECT') {
+                    el.setAttribute('disabled', 'disabled');
+                } else {
+                    el.setAttribute('readonly', 'readonly');
+                }
                 el.classList.remove('border', 'border-primary');
                 if (snapshotDadosObra && snapshotDadosObra[el.name] !== undefined) {
                     el.value = snapshotDadosObra[el.name];

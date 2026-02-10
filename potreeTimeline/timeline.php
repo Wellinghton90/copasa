@@ -1,7 +1,7 @@
 <?php
 /**
  * Página de visualização de nuvem de pontos (timeline).
- * Configuração centralizada no bloco abaixo; dados vêm de scripts/projetos.json.
+ * Configuração em config/timeline.php.
  */
 
 session_start();
@@ -10,39 +10,15 @@ if (file_exists('connection.php')) {
     include 'connection.php';
 }
 
-// -----------------------------------------------------------------------------
-// Configuração
-// -----------------------------------------------------------------------------
-$CONFIG = [
-    'jsonProjetos' => __DIR__ . '/data/projetos.json',
-    'baseProjetos' => '../projetos/Juatuba',           // servidor com 2_densification: ex. 'projetos/Juatuba'
-    'suffixPotree' => '2_densification/point_cloud/potree',             // servidor: '2_densification/point_cloud/potree'
-];
+require_once __DIR__ . '/config/timeline.php';
 
-// Lista de projetos (gerada por scripts/build_projetos_json.py)
-$projetosDisponiveis = [];
-if (file_exists($CONFIG['jsonProjetos'])) {
-    $raw = file_get_contents($CONFIG['jsonProjetos']);
-    $decoded = json_decode($raw, true);
-    $projetosDisponiveis = is_array($decoded) ? $decoded : [];
+// Debug quando nenhum projeto carrega: mensagem só no console (não na tela)
+$jsonPath = (isset($CONFIG) && isset($CONFIG['jsonProjetos'])) ? $CONFIG['jsonProjetos'] : (dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'projetos.json');
+$jsonExists = file_exists($jsonPath);
+$NUVEM_DEBUG_MSG = null;
+if (empty($projetosDisponiveis)) {
+    $NUVEM_DEBUG_MSG = 'Nenhuma nuvem no dropdown. Verifique: (1) O arquivo data/projetos.json existe no servidor? (2) config/timeline.php está configurado? Caminho usado: ' . $jsonPath . ' — Arquivo existe? ' . ($jsonExists ? 'sim' : 'NAO');
 }
-
-// Projeto inicial: ?projeto=... se estiver na lista, senão primeiro da lista
-$ids = array_column($projetosDisponiveis, 'id');
-$nomeProjeto = $_GET['projeto'] ?? null;
-$projetoInicial = ($nomeProjeto !== null && in_array($nomeProjeto, $ids, true))
-    ? $nomeProjeto
-    : (isset($projetosDisponiveis[0]['id']) ? $projetosDisponiveis[0]['id'] : '');
-
-// Config injetada no JS (objeto único)
-$NUVEM_CONFIG = [
-    'projetosDisponiveis' => $projetosDisponiveis,
-    'projetoInicial'      => $projetoInicial,
-    'baseProjetos'        => $CONFIG['baseProjetos'],
-    'suffixPotree'        => $CONFIG['suffixPotree'],
-    'obra'                => $projetoInicial,
-    'developerMode'       => false,   // false para desabilitar a ferramenta Offset
-];
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -77,36 +53,63 @@ $NUVEM_CONFIG = [
 </head>
 <body>
 
-    <div class="viewer-toolbar">
-        <div class="timeline-row">
-            <span>Timeline</span>
+    <div class="potree_container">
+        <aside class="sidebar-left" id="sidebar_left">
+            <button type="button" id="btn_sidebar_config" class="sidebar-btn" data-mode="config" title="Ferramentas Potree (medição, câmera, clipping)">
+                <span class="sidebar-icon">🔧</span>
+                <span class="sidebar-label">Ferramentas</span>
+            </button>
+            <button type="button" id="btn_sidebar_camadas" class="sidebar-btn" data-mode="camadas" title="Camadas">
+                <span class="sidebar-icon">📑</span>
+                <span class="sidebar-label">Camadas</span>
+            </button>
+            <button type="button" id="btn_sidebar_compare_photos" class="sidebar-btn" data-mode="compare" title="Comparar fotos">
+                <span class="sidebar-icon">↔️</span>
+                <span class="sidebar-label">Comparar Fotos</span>
+            </button>
+            <button type="button" id="btn_sidebar_fotos_no_ponto" class="sidebar-btn" data-mode="fotos" title="Fotos no ponto">
+                <span class="sidebar-icon">🎯</span>
+                <span class="sidebar-label">Fotos do Ponto</span>
+            </button>
+        </aside>
+
+        <div class="left-panel" id="left_panel">
+            <div class="left-panel-content" data-mode="config" id="left_panel_config">
+                <div id="potree_sidebar_container"></div>
+            </div>
+            <div class="left-panel-content" data-mode="camadas" id="left_panel_camadas"></div>
+            <div class="left-panel-content" data-mode="compare" id="left_panel_compare"></div>
+            <div class="left-panel-content" data-mode="fotos" id="left_panel_fotos"></div>
+        </div>
+
+        <div id="potree_render_area"></div>
+    </div>
+
+    <footer class="status-bar" id="status_bar">
+        <div class="status-bar-left" id="status_bar_message">
+            Nuvem de pontos
+        </div>
+        <div class="status-bar-center">
             <div class="timeline-controls">
                 <button type="button" id="btn_anterior" title="Projeto anterior">←</button>
                 <select id="seletor_projeto" title="Nuvem / Data"></select>
                 <button type="button" id="btn_proximo" title="Próximo projeto">→</button>
             </div>
         </div>
-        <span>Tamanho dos pontos</span>
-        <div>
-            <button type="button" data-param="0.5" onclick="mudaPonto(this)">0.5</button>
-            <button type="button" data-param="1" onclick="mudaPonto(this)">1</button>
-            <button type="button" data-param="1.5" onclick="mudaPonto(this)">1.5</button>
-            <button type="button" data-param="2" onclick="mudaPonto(this)">2</button>
-            <button type="button" data-param="2.5" onclick="mudaPonto(this)">2.5</button>
-            <button type="button" data-param="3" onclick="mudaPonto(this)">3</button>
-        </div>
-    </div>
-
-    <div class="potree_container">
-        <div id="potree_render_area"></div>
-        <div id="potree_sidebar_container"></div>
-    </div>
+        <div class="status-bar-right" id="status_bar_extra"></div>
+    </footer>
 
     <script>
         window.NUVEM_CONFIG = <?php echo json_encode($NUVEM_CONFIG); ?>;
+        <?php if (!empty($NUVEM_DEBUG_MSG)): ?>
+        console.warn('[NUVEM] Dropdown vazio:', <?php echo json_encode($NUVEM_DEBUG_MSG); ?>);
+        <?php endif; ?>
     </script>
-    <script type="module" src="js/nuvem-timeline.js"></script>
-    <script src="js/nuvem.js"></script>
+    <script type="module" src="js/viewer/timeline.js"></script>
+    <script src="js/viewer/viewer-global.js"></script>
+    <script type="module" src="js/tools/photos-at-point.js"></script>
+    <script type="module" src="js/tools/compare-photos.js"></script>
+    <script type="module" src="js/tools/layers.js"></script>
 
 </body>
 </html>
