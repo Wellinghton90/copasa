@@ -1728,26 +1728,30 @@ if (isset($_GET['logout'])) {
                         Nenhum registro de risco cadastrado para esta obra.
                     </div>
                 <?php else:
-                    // Fórmula: pontos = nota × peso (grau_risco é texto: Baixo, Médio, Alto)
-                    // 5-84 vermelho | 85-166 amarelo | 167+ verde
-                    $corPorPontos = function($pontos) {
-                        $p = (int) $pontos;
-                        if ($p <= 84) return ['fundo' => 'rgba(248, 215, 218, 1)', 'badge' => 'bg-danger'];
-                        if ($p <= 166) return ['fundo' => 'rgba(255, 243, 205, 1)', 'badge' => 'bg-warning text-dark'];
-                        return ['fundo' => 'rgba(212, 237, 218, 1)', 'badge' => 'bg-success'];
+                    // Porcentagem por grupo: cada pergunta vale (100/N)%. Resposta "Sim" = risco (ganha a %); "Não" = 0%.
+                    // até 33.0% verde | 33.1% a 67.0% amarelo | acima de 67.1% vermelho
+                    $corPorPorcentagem = function($pct) {
+                        $p = (float) $pct;
+                        if ($p <= 33.0) return ['fundo' => 'rgba(212, 237, 218, 1)', 'badge' => 'bg-success'];
+                        if ($p <= 67.0) return ['fundo' => 'rgba(255, 243, 205, 1)', 'badge' => 'bg-warning text-dark'];
+                        return ['fundo' => 'rgba(248, 215, 218, 1)', 'badge' => 'bg-danger'];
+                    };
+                    $temRisco = function($resposta) {
+                        $r = mb_strtoupper(trim($resposta ?? ''));
+                        return ($r === 'SIM');
                     };
                 ?>
                     <div class="accordion" id="accordionRiscos">
                         <?php
                         $primeiro = false;
                         foreach ($riscos_por_grupo as $grupo_tipo => $itens):
-                            $total_pontos = 0;
+                            $n_perguntas = count($itens);
+                            $pct_por_pergunta = $n_perguntas > 0 ? (100.0 / $n_perguntas) : 0;
+                            $total_pct = 0;
                             foreach ($itens as $r) {
-                                $n = isset($r['nota_risco']) && $r['nota_risco'] !== '' && $r['nota_risco'] !== null ? (float)$r['nota_risco'] : 0;
-                                $p = isset($r['peso']) && $r['peso'] !== '' && $r['peso'] !== null ? (int)$r['peso'] : 0;
-                                $total_pontos += $n * $p;
+                                $total_pct += $temRisco($r['resposta'] ?? '') ? $pct_por_pergunta : 0;
                             }
-                            $titulo_cores = $corPorPontos($total_pontos);
+                            $titulo_cores = $corPorPorcentagem($total_pct);
                             $id_collapse = 'risco-' . preg_replace('/[^a-z0-9]/i', '-', $grupo_tipo) . '-' . bin2hex(random_bytes(4));
                             $expandido = $primeiro ? 'show' : '';
                             $colapsado = $primeiro ? '' : 'collapsed';
@@ -1758,17 +1762,15 @@ if (isset($_GET['logout'])) {
                                 <h2 class="accordion-header">
                                     <button class="accordion-button <?= $colapsado ?> text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#<?= htmlspecialchars($id_collapse) ?>" aria-expanded="<?= $aria_expanded ?>" aria-controls="<?= htmlspecialchars($id_collapse) ?>" style="background-color: <?= $titulo_cores['fundo'] ?>;">
                                         <b><?= htmlspecialchars($grupo_tipo) ?></b>
-                                        <span class="badge <?= $titulo_cores['badge'] ?> ms-2 opacity-100"><?= (int)$total_pontos ?> pts</span>
+                                        <span class="badge <?= $titulo_cores['badge'] ?> ms-2 opacity-100"><?= number_format($total_pct, 1, ',', '') ?>%</span>
                                     </button>
                                 </h2>
                                 <div id="<?= htmlspecialchars($id_collapse) ?>" class="accordion-collapse collapse <?= $expandido ?>" data-bs-parent="#accordionRiscos">
                                     <div class="accordion-body">
                                         <?php foreach ($itens as $idx => $r):
-                                            $grau_txt = trim($r['grau_risco'] ?? '');
-                                            $nota = isset($r['nota_risco']) && $r['nota_risco'] !== '' && $r['nota_risco'] !== null ? (float)$r['nota_risco'] : 0;
-                                            $peso = isset($r['peso']) && $r['peso'] !== '' && $r['peso'] !== null ? (int)$r['peso'] : 0;
-                                            $pontos = $nota * $peso;
                                             $evidencia = trim($r['evidencia_fotografica'] ?? '');
+                                            $risco_detectado = $temRisco($r['resposta'] ?? '');
+                                            $pct_esta = $risco_detectado ? $pct_por_pergunta : 0;
                                         ?>
                                             <div class="card mb-3 border border-dark border-2" style="background-color: <?= $titulo_cores['fundo'] ?>;">
                                                 <div class="card-body">
@@ -1781,29 +1783,19 @@ if (isset($_GET['logout'])) {
                                                     </h6>
                                                     <p class="card-text mb-2"><?= nl2br(htmlspecialchars($r['resposta'] ?? '-')) ?></p>
                                                     <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
-                                                        <span class="text-muted small">Pontos desta pergunta:</span>
-                                                        <span class="badge bg-secondary"><?= (int)$pontos ?> pts</span>
-                                                        <?php if ($grau_txt !== ''): ?>
-                                                            <span class="text-muted small">Grau:</span>
-                                                            <span class="badge bg-secondary"><?= htmlspecialchars($grau_txt) ?></span>
-                                                        <?php endif; ?>
-                                                        <?php if ($nota > 0): ?>
-                                                            <span class="text-muted small">Nota:</span>
-                                                            <span class="badge bg-secondary"><?= htmlspecialchars(number_format($nota, 1, ',', '.')) ?></span>
-                                                        <?php endif; ?>
-                                                        <?php if ($peso > 0): ?>
-                                                            <span class="text-muted small">Peso:</span>
-                                                            <span class="badge bg-dark"><?= $peso ?></span>
-                                                        <?php endif; ?>
+                                                        <span class="text-muted small">Risco nesta pergunta:</span>
+                                                        <span class="badge <?= $risco_detectado ? 'bg-danger' : 'bg-success' ?>"><?= $risco_detectado ? number_format($pct_esta, 1, ',', '') . '%' : '0%' ?></span>
                                                     </div>
-                                                    <?php if ($evidencia !== ''): ?>
-                                                        <div class="mt-2">
-                                                            <span class="text-muted small">Evidência fotográfica:</span>
+                                                    <div class="mt-2">
+                                                        <span class="text-muted small">Evidências fotográficas:</span>
+                                                        <?php if ($evidencia !== ''): ?>
                                                             <p class="mb-0 small">
                                                                 <a href="<?= htmlspecialchars($evidencia) ?>" class="text-primary" target="_blank" rel="noopener"><?= htmlspecialchars($evidencia) ?></a>
                                                             </p>
-                                                        </div>
-                                                    <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <p class="mb-0 small text-muted">Não há evidências.</p>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </div>
                                             </div>
                                         <?php endforeach; ?>
