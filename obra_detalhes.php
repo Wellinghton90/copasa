@@ -1740,6 +1740,12 @@ if (isset($_GET['logout'])) {
                         $r = mb_strtoupper(trim($resposta ?? ''));
                         return ($r === 'SIM');
                     };
+                    // Ordenar grupos pelo menor id_risco_obra dos itens (ordem numérica, não alfabética)
+                    uasort($riscos_por_grupo, function($a, $b) {
+                        $id_a = min(array_map(function($r) { return (int)($r['id_risco_obra'] ?? 0); }, $a));
+                        $id_b = min(array_map(function($r) { return (int)($r['id_risco_obra'] ?? 0); }, $b));
+                        return $id_a <=> $id_b;
+                    });
                 ?>
                     <div class="accordion" id="accordionRiscos">
                         <?php
