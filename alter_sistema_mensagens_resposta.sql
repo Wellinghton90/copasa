@@ -1,0 +1,3 @@
+-- (Substituído por create_sistema_respostas.sql)
+-- Respostas ficam na tabela sistema_respostas, não em sistema_mensagens.
+-- Use: create_sistema_respostas.sql

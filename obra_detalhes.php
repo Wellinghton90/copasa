@@ -1276,6 +1276,152 @@ if (isset($_GET['logout'])) {
         .accordion-item {
             background-color: rgba(255, 255, 255, 0.05) !important;
         }
+
+        /* Offcanvas Mensagens: altura total, mesma paleta da página */
+        .offcanvas-mensagens-full {
+            height: 100vh !important;
+            max-height: 100vh !important;
+            background: var(--gradient-bg) !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .offcanvas-mensagens-full::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            z-index: 1;
+        }
+        .offcanvas-mensagens-full .offcanvas-body {
+            overflow: hidden;
+            background: transparent;
+        }
+        .offcanvas-mensagens-full .offcanvas-header {
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: var(--text-light);
+        }
+        .offcanvas-mensagens-full .offcanvas-title {
+            color: var(--text-light);
+            font-weight: 700;
+        }
+        .offcanvas-mensagens-full .offcanvas-title i {
+            color: var(--primary-color);
+        }
+        .offcanvas-mensagens-full .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+        .offcanvas-mensagens-full .btn-close:hover {
+            opacity: 1;
+        }
+        #mensagensLista {
+            background: transparent;
+            color: var(--text-light);
+        }
+        #mensagensListaLoading,
+        #mensagensListaVazia {
+            color: var(--accent-color) !important;
+        }
+        #mensagensListaLoading .spinner-border {
+            border-color: rgba(0, 188, 212, 0.2);
+            border-top-color: var(--primary-color);
+        }
+        .msg-item {
+            background: var(--card-bg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: var(--text-light);
+        }
+        .msg-item strong {
+            color: var(--text-light);
+        }
+        .msg-item .text-muted {
+            color: var(--accent-color) !important;
+            opacity: 0.9;
+        }
+        .msg-data, .msg-card-novo .small.text-muted.mb-1, .msg-item .small.text-muted {
+            color: var(--text-light) !important;
+        }
+        #mensagensNaoLidasBadge {
+            font-size: 0.7rem;
+            min-width: 1.2em;
+        }
+        .msg-item .badge.bg-info {
+            background: rgba(0, 188, 212, 0.3) !important;
+            color: var(--accent-color);
+        }
+        .msg-item .badge.bg-warning {
+            background: rgba(255, 193, 7, 0.25) !important;
+            color: #ffc107;
+        }
+        .msg-item.msg-item-nao-lida {
+            border-color: rgba(0, 188, 212, 0.4) !important;
+            box-shadow: 0 0 0 1px rgba(0, 188, 212, 0.15);
+        }
+        .msg-card-novo {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .msg-card-novo textarea {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            color: var(--text-light);
+            border-radius: 8px;
+        }
+        .msg-card-novo textarea::placeholder {
+            color: rgba(227, 242, 253, 0.5);
+        }
+        .msg-card-novo .dropdown-mencionar-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 8px;
+            margin-top: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .msg-card-novo .dropdown-mencionar-card .btn-outline-secondary {
+            background: rgba(0, 188, 212, 0.05);
+            border-color: rgba(0, 188, 212, 0.2);
+            color: var(--text-light);
+        }
+        .msg-card-novo .dropdown-mencionar-card .btn-outline-secondary:hover {
+            background: rgba(0, 188, 212, 0.15);
+            color: var(--accent-color);
+        }
+        .msg-card-novo .badge.bg-secondary {
+            background: rgba(0, 188, 212, 0.2) !important;
+            color: var(--accent-color);
+            border: 1px solid rgba(0, 188, 212, 0.3);
+        }
+        .msg-item .msg-form-responder textarea,
+        .msg-item .msg-texto-editar {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            color: var(--text-light);
+        }
+        .msg-item .msg-texto-editar::placeholder {
+            color: rgba(227, 242, 253, 0.5);
+        }
+        .msg-item .msg-respostas .msg-data {
+            color: var(--text-light) !important;
+        }
+        .msg-item .dropdown-mencionar-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            border-radius: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .msg-item .mencionados-chips-card .badge {
+            background: rgba(0, 188, 212, 0.2) !important;
+            color: var(--accent-color);
+            border: 1px solid rgba(0, 188, 212, 0.3);
+        }
     </style>
 </head>
 
@@ -1284,6 +1430,33 @@ if (isset($_GET['logout'])) {
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
         <div class="loading-text" id="loadingText">Carregando...</div>
+    </div>
+
+    <!-- Offcanvas Mensagens (painel lateral direito, altura total) -->
+    <div class="offcanvas offcanvas-end offcanvas-mensagens-full" tabindex="-1" id="offcanvasMensagens" aria-labelledby="offcanvasMensagensLabel" data-bs-backdrop="false" data-bs-scroll="true">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasMensagensLabel">
+                <i class="fa-regular fa-message me-2"></i> Mensagens da obra
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <div id="mensagensLista" class="flex-grow-1 overflow-auto p-3" style="min-height: 0;">
+                <div id="mensagensListaToolbar" class="d-flex justify-content-end mb-2">
+                    <button type="button" class="btn btn-primary btn-sm" id="btnNovaMensagem" title="Nova mensagem">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="mensagensCardsNovos"></div>
+                <div id="mensagensListaLoading" class="text-center py-4 text-muted">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Carregando mensagens...
+                </div>
+                <div id="mensagensListaConteudo" style="display: none;"></div>
+                <div id="mensagensListaVazia" class="text-center py-4 text-muted" style="display: none;">
+                    Nenhuma mensagem.
+                </div>
+            </div>
+        </div>
     </div>
 
     <nav class="navbar navbar-expand-lg">
@@ -1301,6 +1474,13 @@ if (isset($_GET['logout'])) {
                         <a class="nav-link" href="dashboard.php">
                             <i class="fas fa-tachometer-alt me-1"></i>
                             Dashboard
+                        </a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="abrirModalMensagens(); return false;" title="Mensagens" id="navLinkMensagens">
+                            <i class="fa-regular fa-message me-1"></i>
+                            <span id="mensagensNaoLidasBadge" class="badge bg-warning text-dark me-1" style="display: none;">0</span>
+                            Mensagens
                         </a>
                     </li>
                     <li class="nav-item">
@@ -2108,6 +2288,405 @@ if (isset($_GET['logout'])) {
             showLoading('Redirecionando...');
             window.location.href = 'dashboard.php';
         }
+
+        // --- Sistema de Mensagens (cards com botão +) ---
+        const OBRA_ID_MENSAGENS = <?= (int)$obra_id ?>;
+        let listaUsuariosMencionar = [];
+        let contadorCardNovo = 0;
+        var cardMencionados = {};
+        var cardMencionadosNomes = {};
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function abrirModalMensagens() {
+            var offcanvasEl = document.getElementById('offcanvasMensagens');
+            var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+            document.getElementById('mensagensListaLoading').style.display = 'block';
+            document.getElementById('mensagensListaConteudo').style.display = 'none';
+            document.getElementById('mensagensListaVazia').style.display = 'none';
+            offcanvas.show();
+            carregarMensagens();
+            carregarUsuariosMencionar();
+        }
+
+        function carregarMensagens() {
+            fetch('api_mensagens.php?action=listar&obra_id=' + OBRA_ID_MENSAGENS)
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    document.getElementById('mensagensListaLoading').style.display = 'none';
+                    if (res.ok && res.mensagens && res.mensagens.length > 0) {
+                        document.getElementById('mensagensListaVazia').style.display = 'none';
+                        var div = document.getElementById('mensagensListaConteudo');
+                        div.style.display = 'block';
+                        div.innerHTML = '';
+                        var meuId = <?= (int)$usuario["id"] ?>;
+                        res.mensagens.forEach(function(m) {
+                            if (parseInt(m.usuario_id) === meuId) {
+                                div.appendChild(criarCardMensagemSalva(m));
+                            } else {
+                                div.appendChild(criarMsgItemReadOnly(m));
+                            }
+                        });
+                        div.scrollTop = 0;
+                        res.mensagens.forEach(function(m) {
+                            if (m.id_usuario_destino && parseInt(m.id_usuario_destino) === meuId && (m.lida == '0' || m.lida === 0)) {
+                                var fd = new FormData();
+                                fd.append('action', 'marcar_lida');
+                                fd.append('mensagem_id', m.id);
+                                fetch('api_mensagens.php', { method: 'POST', body: fd });
+                            }
+                        });
+                        atualizarContadorMensagens();
+                    } else {
+                        document.getElementById('mensagensListaConteudo').style.display = 'none';
+                        document.getElementById('mensagensListaVazia').style.display = 'block';
+                    }
+                })
+                .catch(function() {
+                    document.getElementById('mensagensListaLoading').style.display = 'none';
+                    document.getElementById('mensagensListaConteudo').style.display = 'none';
+                    document.getElementById('mensagensListaVazia').innerHTML = 'Erro ao carregar mensagens.';
+                    document.getElementById('mensagensListaVazia').style.display = 'block';
+                });
+        }
+
+        function criarMsgItemReadOnly(m) {
+            var dataFormatada = m.data ? new Date(m.data).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+            var fuiMencionado = m.id_usuario_destino && parseInt(m.id_usuario_destino) === <?= (int)$usuario["id"] ?>;
+            var naoLida = fuiMencionado && (m.lida == '0' || m.lida === 0);
+            var badge = '';
+            if (naoLida) badge = '<span class="badge bg-warning text-dark ms-1">não lida</span>';
+            var btnLida = '';
+            if (naoLida) {
+                btnLida = '<button type="button" class="btn btn-sm btn-outline-primary mt-1 btn-marcar-lida" data-mensagem-id="' + m.id + '" title="Marcar como lida"><i class="fas fa-check me-1"></i>Marcar como lida</button>';
+            }
+            var btnResponder = '';
+            if (fuiMencionado) {
+                btnResponder = '<button type="button" class="btn btn-sm btn-outline-secondary mt-1 btn-responder-msg" title="Responder"><i class="fas fa-pencil-alt me-1"></i>Responder</button>';
+            }
+            var botoesRow = '<div class="d-flex flex-wrap gap-1 mt-1">' + btnLida + btnResponder + '</div>';
+            var htmlRespostas = '';
+            if (m.respostas && m.respostas.length > 0) {
+                htmlRespostas = '<div class="msg-respostas mt-2 pt-2 border-top border-secondary">';
+                m.respostas.forEach(function(r) {
+                    var dr = r.data ? new Date(r.data).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                    var txt = r.texto || r.mensagem || '';
+                    htmlRespostas += '<div class="small mb-2"><strong class="msg-data">' + escapeHtml(r.usuario) + '</strong> <span class="msg-data opacity-75">' + dr + '</span><br><span class="msg-data">' + escapeHtml(txt) + '</span></div>';
+                });
+                htmlRespostas += '</div>';
+            }
+            var el = document.createElement('div');
+            el.className = 'msg-item border rounded p-2 mb-2' + (naoLida ? ' msg-item-nao-lida' : '');
+            el.setAttribute('data-id', m.id);
+            el.innerHTML = '<div class="d-flex justify-content-between align-items-start">' +
+                '<strong class="small">' + escapeHtml(m.usuario) + '</strong>' +
+                '<span class="small text-muted msg-data">' + dataFormatada + '</span>' +
+                '</div>' +
+                '<p class="mb-0 mt-1 small">' + escapeHtml(m.mensagem) + ' ' + badge + '</p>' +
+                htmlRespostas +
+                botoesRow +
+                '<div class="msg-form-responder mt-2" style="display: none;">' +
+                '<textarea class="form-control form-control-sm mb-1 msg-texto-resposta" rows="2" placeholder="Sua resposta..." maxlength="2000"></textarea>' +
+                '<button type="button" class="btn btn-primary btn-sm btn-enviar-resposta">Enviar resposta</button>' +
+                '</div>';
+            if (naoLida) {
+                el.querySelector('.btn-marcar-lida').addEventListener('click', function() {
+                    var btn = this;
+                    btn.disabled = true;
+                    var fd = new FormData();
+                    fd.append('action', 'marcar_lida');
+                    fd.append('mensagem_id', m.id);
+                    fetch('api_mensagens.php', { method: 'POST', body: fd })
+                        .then(function(r) { return r.json(); })
+                        .then(function(res) {
+                            if (res.ok) { carregarMensagens(); atualizarContadorMensagens(); } else { btn.disabled = false; }
+                        })
+                        .catch(function() { btn.disabled = false; });
+                });
+            }
+            if (fuiMencionado) {
+                var btnResp = el.querySelector('.btn-responder-msg');
+                var formResp = el.querySelector('.msg-form-responder');
+                var txtResp = el.querySelector('.msg-texto-resposta');
+                var btnEnviarResp = el.querySelector('.btn-enviar-resposta');
+                btnResp.addEventListener('click', function() {
+                    if (formResp.style.display === 'none') {
+                        formResp.style.display = 'block';
+                        txtResp.focus();
+                    } else {
+                        formResp.style.display = 'none';
+                    }
+                });
+                btnEnviarResp.addEventListener('click', function() {
+                    var texto = txtResp.value.trim();
+                    if (!texto) return;
+                    btnEnviarResp.disabled = true;
+                    var fd = new FormData();
+                    fd.append('action', 'enviar_resposta');
+                    fd.append('mensagem_id', m.id);
+                    fd.append('texto', texto);
+                    fetch('api_mensagens.php', { method: 'POST', body: fd })
+                        .then(function(r) { return r.json(); })
+                        .then(function(res) {
+                            btnEnviarResp.disabled = false;
+                            if (res.ok) {
+                                txtResp.value = '';
+                                formResp.style.display = 'none';
+                                carregarMensagens();
+                            } else {
+                                alert(res.msg || 'Erro ao enviar resposta.');
+                            }
+                        })
+                        .catch(function() { btnEnviarResp.disabled = false; });
+                });
+            }
+            return el;
+        }
+
+        function criarCardMensagemSalva(m) {
+            var cardId = 'msg-' + m.id;
+            var menList = m.mencionados || [];
+            cardMencionados[cardId] = menList.map(function(x) { return parseInt(x.id); });
+            cardMencionadosNomes[cardId] = {};
+            menList.forEach(function(x) { cardMencionadosNomes[cardId][parseInt(x.id)] = x.nome || ('ID ' + x.id); });
+            var dataFormatada = m.data ? new Date(m.data).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+            var htmlRespostas = '';
+            if (m.respostas && m.respostas.length > 0) {
+                htmlRespostas = '<div class="msg-respostas mt-2 pt-2 border-top border-secondary">';
+                m.respostas.forEach(function(r) {
+                    var dr = r.data ? new Date(r.data).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                    var txt = r.texto || r.mensagem || '';
+                    htmlRespostas += '<div class="small mb-2"><strong class="msg-data">' + escapeHtml(r.usuario) + '</strong> <span class="msg-data opacity-75">' + dr + '</span><br><span class="msg-data">' + escapeHtml(txt) + '</span></div>';
+                });
+                htmlRespostas += '</div>';
+            }
+            var card = document.createElement('div');
+            card.className = 'msg-item border rounded p-2 mb-2';
+            card.setAttribute('data-card-id', cardId);
+            card.setAttribute('data-mensagem-id', m.id);
+            card.innerHTML =
+                '<div class="d-flex justify-content-between align-items-start">' +
+                '<strong class="small">Você</strong>' +
+                '<span class="small text-muted msg-data">' + dataFormatada + '</span>' +
+                '</div>' +
+                '<textarea class="form-control form-control-sm mt-1 mb-2 msg-texto-editar" rows="2" placeholder="Digite sua mensagem..." maxlength="2000">' + escapeHtml(m.mensagem) + '</textarea>' +
+                '<div class="mencionados-chips-card d-flex flex-wrap gap-1 mb-2"></div>' +
+                '<div class="dropdown-mencionar-card p-2" style="display: none;"><div class="small fw-bold mb-1" style="color: var(--accent-color);">Mencionar usuário</div><div class="lista-usuarios-card"></div></div>' +
+                htmlRespostas +
+                '<div class="d-flex flex-wrap gap-1 mt-1">' +
+                '<button type="button" class="btn btn-sm btn-outline-secondary btn-card-mencionar" title="Mencionar"><i class="fas fa-at me-1"></i>Mencionar</button>' +
+                '<button type="button" class="btn btn-sm btn-danger btn-card-excluir" title="Excluir"><i class="fas fa-trash-alt me-1"></i>Excluir</button>' +
+                '<button type="button" class="btn btn-sm btn-primary btn-card-salvar" title="Salvar"><i class="fas fa-save me-1"></i>Salvar</button>' +
+                '</div>';
+            renderChipsForCard(cardId, card);
+            card.querySelector('.btn-card-mencionar').addEventListener('click', function() { toggleDropdownCard(cardId); });
+            card.querySelector('.btn-card-excluir').addEventListener('click', function() {
+                if (!confirm('Excluir esta mensagem?')) return;
+                var btn = this;
+                btn.disabled = true;
+                var fd = new FormData();
+                fd.append('action', 'excluir');
+                fd.append('mensagem_id', parseInt(m.id, 10) || m.id);
+                fetch('api_mensagens.php', { method: 'POST', body: fd })
+                    .then(function(r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function(res) {
+                        if (res.ok) {
+                            delete cardMencionados[cardId];
+                            delete cardMencionadosNomes[cardId];
+                            carregarMensagens();
+                            atualizarContadorMensagens();
+                        } else {
+                            alert(res.msg || 'Erro ao excluir.');
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(function(err) {
+                        btn.disabled = false;
+                        alert('Erro ao excluir: ' + (err.message || 'verifique o console.'));
+                    });
+            });
+            card.querySelector('.btn-card-salvar').addEventListener('click', function() {
+                var texto = card.querySelector('.msg-texto-editar').value.trim();
+                if (!texto) { alert('Digite uma mensagem.'); return; }
+                var btn = this;
+                btn.disabled = true;
+                var fd = new FormData();
+                fd.append('action', 'atualizar');
+                fd.append('mensagem_id', m.id);
+                fd.append('mensagem', texto);
+                (cardMencionados[cardId] || []).forEach(function(id) { fd.append('mencionados[]', id); });
+                fetch('api_mensagens.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        btn.disabled = false;
+                        if (res.ok) carregarMensagens(); else alert(res.msg || 'Erro ao atualizar.');
+                    })
+                    .catch(function() { btn.disabled = false; alert('Erro ao atualizar.'); });
+            });
+            return card;
+        }
+
+        function atualizarContadorMensagens() {
+            fetch('api_mensagens.php?action=contar_nao_lidas')
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (!res.ok) return;
+                    var badge = document.getElementById('mensagensNaoLidasBadge');
+                    if (!badge) return;
+                    var n = res.total || 0;
+                    if (n > 0) {
+                        badge.textContent = n > 99 ? '99+' : n;
+                        badge.style.display = '';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                });
+        }
+
+        function carregarUsuariosMencionar() {
+            fetch('api_mensagens.php?action=usuarios')
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (res.ok && res.usuarios) listaUsuariosMencionar = res.usuarios;
+                });
+        }
+
+        function renderChipsForCard(cardId, cardEl) {
+            var card = cardEl || document.querySelector('[data-card-id="' + cardId + '"]');
+            if (!card) return;
+            var container = card.querySelector('.mencionados-chips-card');
+            if (!container) return;
+            var ids = cardMencionados[cardId] || [];
+            var nomes = cardMencionadosNomes[cardId] || {};
+            container.innerHTML = '';
+            ids.forEach(function(id) {
+                var nome = nomes[id] || (function() {
+                    var u = listaUsuariosMencionar.find(function(x) { return parseInt(x.id) === parseInt(id); });
+                    return u ? (u.nome || u.login) : 'ID ' + id;
+                })();
+                var span = document.createElement('span');
+                span.className = 'badge bg-secondary d-inline-flex align-items-center gap-1 me-1 mb-1';
+                span.innerHTML = nome + ' <button type="button" class="btn-close btn-close-white btn-close-sm p-0 ms-1" style="font-size: 0.6rem;" data-id="' + id + '" aria-label="Remover"></button>';
+                span.querySelector('button').addEventListener('click', function() {
+                    cardMencionados[cardId] = (cardMencionados[cardId] || []).filter(function(x) { return x != id; });
+                    renderChipsForCard(cardId);
+                });
+                container.appendChild(span);
+            });
+        }
+
+        function toggleDropdownCard(cardId) {
+            var card = document.querySelector('[data-card-id="' + cardId + '"]');
+            if (!card) return;
+            var dd = card.querySelector('.dropdown-mencionar-card');
+            if (!dd) return;
+            if (dd.style.display === 'block') {
+                dd.style.display = 'none';
+                return;
+            }
+            var ids = cardMencionados[cardId] || [];
+            var disponiveis = listaUsuariosMencionar.filter(function(u) { return ids.indexOf(parseInt(u.id)) === -1; });
+            var lista = dd.querySelector('.lista-usuarios-card');
+            if (!lista) return;
+            if (disponiveis.length === 0) {
+                lista.innerHTML = '<div class="small p-2 text-muted">Nenhum usuário para adicionar.</div>';
+            } else {
+                lista.innerHTML = disponiveis.map(function(u) {
+                    return '<button type="button" class="btn btn-sm btn-outline-secondary w-100 text-start mb-1" data-id="' + u.id + '"><i class="fas fa-user me-1"></i> ' + escapeHtml(u.nome || u.login) + '</button>';
+                }).join('');
+                lista.querySelectorAll('button[data-id]').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var id = parseInt(this.getAttribute('data-id'));
+                        var nome = (listaUsuariosMencionar.find(function(x) { return parseInt(x.id) === id; }) || {}).nome || btn.textContent.trim();
+                        if (!cardMencionados[cardId]) cardMencionados[cardId] = [];
+                        if (cardMencionados[cardId].indexOf(id) === -1) {
+                            cardMencionados[cardId].push(id);
+                            if (!cardMencionadosNomes[cardId]) cardMencionadosNomes[cardId] = {};
+                            cardMencionadosNomes[cardId][id] = nome;
+                        }
+                        renderChipsForCard(cardId);
+                        dd.style.display = 'none';
+                    });
+                });
+            }
+            dd.style.display = 'block';
+        }
+
+        function addCardNovo() {
+            var cardId = 'card-' + (++contadorCardNovo);
+            cardMencionados[cardId] = [];
+            cardMencionadosNomes[cardId] = {};
+            var container = document.getElementById('mensagensCardsNovos');
+            var card = document.createElement('div');
+            card.className = 'msg-item border rounded p-2 mb-2';
+            card.setAttribute('data-card-id', cardId);
+            card.innerHTML =
+                '<div class="d-flex justify-content-between align-items-start">' +
+                '<strong class="small">Você</strong>' +
+                '<span class="small msg-data opacity-75">Nova mensagem</span>' +
+                '</div>' +
+                '<textarea class="form-control form-control-sm mt-1 mb-2 msg-texto-editar" rows="2" placeholder="Digite sua mensagem..." maxlength="2000"></textarea>' +
+                '<div class="mencionados-chips-card d-flex flex-wrap gap-1 mb-2"></div>' +
+                '<div class="dropdown-mencionar-card p-2" style="display: none;"><div class="small fw-bold mb-1" style="color: var(--accent-color);">Mencionar usuário</div><div class="lista-usuarios-card"></div></div>' +
+                '<div class="d-flex flex-wrap gap-1 mt-1">' +
+                '<button type="button" class="btn btn-sm btn-outline-secondary btn-card-mencionar" title="Mencionar"><i class="fas fa-at me-1"></i>Mencionar</button>' +
+                '<button type="button" class="btn btn-sm btn-danger btn-card-excluir" title="Excluir"><i class="fas fa-trash-alt me-1"></i>Excluir</button>' +
+                '<button type="button" class="btn btn-sm btn-primary btn-card-salvar" title="Salvar"><i class="fas fa-save me-1"></i>Salvar</button>' +
+                '</div>';
+            card.querySelector('.btn-card-mencionar').addEventListener('click', function() { toggleDropdownCard(cardId); });
+            card.querySelector('.btn-card-excluir').addEventListener('click', function() {
+                card.remove();
+                delete cardMencionados[cardId];
+                delete cardMencionadosNomes[cardId];
+            });
+            card.querySelector('.btn-card-salvar').addEventListener('click', function() {
+                var texto = card.querySelector('.msg-texto-editar').value.trim();
+                if (!texto) { alert('Digite uma mensagem.'); return; }
+                var btn = this;
+                btn.disabled = true;
+                var formData = new FormData();
+                formData.append('action', 'enviar');
+                formData.append('obra_id', OBRA_ID_MENSAGENS);
+                formData.append('mensagem', texto);
+                (cardMencionados[cardId] || []).forEach(function(id) { formData.append('mencionados[]', id); });
+                fetch('api_mensagens.php', { method: 'POST', body: formData })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        btn.disabled = false;
+                        if (res.ok) {
+                            card.remove();
+                            delete cardMencionados[cardId];
+                            carregarMensagens();
+                        } else {
+                            alert(res.msg || 'Erro ao enviar.');
+                        }
+                    })
+                    .catch(function() {
+                        btn.disabled = false;
+                        alert('Erro ao enviar mensagem.');
+                    });
+            });
+            container.appendChild(card);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarContadorMensagens();
+            var btnNova = document.getElementById('btnNovaMensagem');
+            if (btnNova) btnNova.addEventListener('click', addCardNovo);
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.btn-card-mencionar') && !e.target.closest('.dropdown-mencionar-card')) {
+                    document.querySelectorAll('[data-card-id] .dropdown-mencionar-card').forEach(function(dd) { dd.style.display = 'none'; });
+                }
+            });
+        });
 
         function baixarTodosDocumentos() {
             showLoading('Preparando download...');
