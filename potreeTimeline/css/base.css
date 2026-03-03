@@ -1,0 +1,45 @@
+/**
+ * Estilos base e reset
+ */
+
+/* --- Layout principal: barra superior + área central + barra inferior --- */
+body.app-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.app-main {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Ocultar header do Potree (descrição "Visualizador 3D - Obra: ...") --- */
+#potree_description {
+    display: none !important;
+}
+
+/* --- Ocultar botão de menu do Potree (3 barras); o painel é aberto pela barra lateral esquerda --- */
+.potree_menu_toggle {
+    display: none !important;
+}
+
+/* --- Container do Potree (ocupa toda a área central entre top bar e status bar) --- */
+.potree_container {
+    position: absolute;
+    inset: 0;
+}
+
+#potree_render_area {
+    position: absolute;
+    left: 88px;  /* igual à largura da barra lateral (.sidebar-left) */
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: gradient;
+    z-index: 1;
+}

@@ -1,0 +1,43 @@
+/**
+ * Estilos da timeline e controles de projeto
+ */
+
+/* Timeline controls dentro da status bar */
+.status-bar .timeline-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-bar .timeline-controls button {
+    font-family: 'Muli', sans-serif;
+    width: 32px;
+    height: 28px;
+    border-radius: 4px;
+    background: #025e73;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.status-bar .timeline-controls button:hover:not(:disabled) {
+    background: #034a5a;
+}
+
+.status-bar .timeline-controls button:disabled {
+    background: #6b8a8f;
+    cursor: not-allowed;
+}
+
+.status-bar #seletor_projeto {
+    font-family: 'Muli', sans-serif;
+    min-width: 180px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #025e73;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+}

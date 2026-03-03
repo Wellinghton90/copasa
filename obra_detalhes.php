@@ -1484,6 +1484,10 @@ if (isset($_GET['logout'])) {
                 <i class="fa-solid fa-calendar-days me-2"></i>
                 Timeline 4D
             </button>
+            <button class="nav-link" id="tabela_diario" onclick="window.location.href='potreeTimeline/data/diario/diario_geral.php'">
+                <i class="fa-solid fa-book-bookmark me-2"></i>
+                Tabela Diário
+            </button>
         </ul>
 
         <div class="tab-content" id="obraTabContent">

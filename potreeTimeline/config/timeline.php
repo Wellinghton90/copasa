@@ -33,5 +33,5 @@ $NUVEM_CONFIG = [
     'baseProjetos'        => $CONFIG['baseProjetos'],
     'suffixPotree'        => $CONFIG['suffixPotree'],
     'obra'                => $projetoInicial,
-    'developerMode'       => false,
+    'developerMode'       => true,
 ];

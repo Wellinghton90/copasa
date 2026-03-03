@@ -1,0 +1,517 @@
+{
+    "user": "MatheusPrates",
+    "entries": [
+        {
+            "id": "d9f124e2-d9f1-4559-9145-feec80392b2b",
+            "description": "Teste anotação",
+            "createdAt": "2026-02-26T17:34:33.236",
+            "createdBy": "Matheus Prates",
+            "history": [
+                {
+                    "at": "2026-02-26T17:34:33.236",
+                    "by": "Matheus Prates",
+                    "previousText": "",
+                    "newText": "Teste anotação"
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_06-11",
+                    "images": [
+                        "DJI_0377",
+                        "DJI_0273",
+                        "DJI_0274",
+                        "DJI_0270"
+                    ],
+                    "pins": [
+                        {
+                            "x": 568385.4507954121,
+                            "y": 7794387.725743294,
+                            "z": 669.8527154922485,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568405.1014924049,
+                            "y": 7794394.116874576,
+                            "z": 673.1597156524658,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568367.3820986748,
+                            "y": 7794399.172308922,
+                            "z": 669.990149974823,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568386.195795536,
+                            "y": 7794382.048743367,
+                            "z": 669.6137154102325,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                },
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_08-11",
+                    "images": [
+                        "DJI_0642"
+                    ],
+                    "pins": [
+                        {
+                            "x": 568383.8354148865,
+                            "y": 7794387.156697273,
+                            "z": 634.8721027374268,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568372.4284143448,
+                            "y": 7794374.846200466,
+                            "z": 634.791600227356,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568385.5349121094,
+                            "y": 7794374.194200516,
+                            "z": 634.5966000556946,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568388.9914088249,
+                            "y": 7794378.467200279,
+                            "z": 634.6426000595093,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568402.5319057703,
+                            "y": 7794398.334194422,
+                            "z": 640.3758487701416,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "80720af6-7255-4497-84e5-dbfe5bd71d0e",
+            "description": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas.",
+            "createdAt": "2026-02-26T23:02:47.988",
+            "createdBy": "Matheus Prates",
+            "history": [
+                {
+                    "at": "2026-02-26T23:02:47.988",
+                    "by": "Matheus Prates",
+                    "previousText": "",
+                    "newText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nClassificação\n\nNão Conformidade (NC)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas."
+                },
+                {
+                    "at": "2026-02-26T23:53:14.102",
+                    "by": "Matheus Prates",
+                    "previousText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nClassificação\n\nNão Conformidade (NC)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas.",
+                    "newText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas."
+                },
+                {
+                    "at": "2026-02-27T19:33:13.251",
+                    "by": "Anônimo",
+                    "previousText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas.",
+                    "newText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568365.643590033,
+                            "y": 7794455.686315432,
+                            "z": 628.9226831197739,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                },
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_18-11",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568365.643590033,
+                            "y": 7794455.686315432,
+                            "z": 628.9226831197739,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ],
+            "title": "Pilhas de tábuas",
+            "regulatoryFramework": "",
+            "associatedRisk": "",
+            "riskLevel": "",
+            "technicalRecommendation": ""
+        },
+        {
+            "id": "fb869778-2035-4d28-b4ec-d0ac51610f30",
+            "description": "1. Descrição\nObserva-se que dois tanques dos reatores MBBR encontram-se cheios de água, indicando provável realização de teste de estanqueidade.\n\nVerificam-se marcas de umidade\/escorrimento nas faces externas das paredes dos tanques, sugerindo possível falha de impermeabilização ou perda de estanqueidade da estrutura.\n\n2. Enquadramento Normativo\n\nNorma COPASA T.175-3 – Projeto e Execução de Estruturas em Concreto para Obras de Saneamento\nEstabelece requisitos para execução, controle tecnológico, desempenho estrutural e estanqueidade de estruturas em concreto destinadas a obras de saneamento.\n\nNorma COPASA T.233-1 – Concepção de Sistemas de Esgotamento Sanitário\nDetermina diretrizes para confiabilidade, durabilidade e integridade das unidades operacionais de ETE.\n\n3. Risco Associado\n\nComprometimento da estanqueidade da estrutura\n\nInfiltração e deterioração precoce do concreto\n\nPatologias estruturais (fissuração e possível corrosão de armaduras)\n\nContaminação do solo e do lençol freático por esgoto não tratado\n\nComprometimento da durabilidade e desempenho operacional da unidade\n\n4. Nível de Risco\n\nNível 3: Crítico (Vermelho)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação do laudo técnico do teste de estanqueidade realizado nos tanques, a fim de confirmar formalmente o resultado do ensaio e identificar eventuais registros de perda de estanqueidade.\n\nCaso o laudo confirme falha no desempenho estrutural ou na impermeabilização, deverá ser executada a correção técnica adequada, com reaplicação do sistema de impermeabilização ou reparo estrutural pertinente, seguida de novo teste de estanqueidade para validação da conformidade.",
+            "createdAt": "2026-02-27T00:11:42.374",
+            "createdBy": "Matheus Prates",
+            "history": [
+                {
+                    "at": "2026-02-27T00:11:42.374",
+                    "by": "Matheus Prates",
+                    "previousText": "",
+                    "newText": "1. Descrição\nObserva-se que dois tanques dos reatores MBBR encontram-se cheios de água, indicando provável realização de teste de estanqueidade.\n\nVerificam-se marcas de umidade\/escorrimento nas faces externas das paredes dos tanques, sugerindo possível falha de impermeabilização ou perda de estanqueidade da estrutura.\n\n2. Enquadramento Normativo\n\nNorma COPASA T.175-3 – Projeto e Execução de Estruturas em Concreto para Obras de Saneamento\nEstabelece requisitos para execução, controle tecnológico, desempenho estrutural e estanqueidade de estruturas em concreto destinadas a obras de saneamento.\n\nNorma COPASA T.233-1 – Concepção de Sistemas de Esgotamento Sanitário\nDetermina diretrizes para confiabilidade, durabilidade e integridade das unidades operacionais de ETE.\n\n3. Risco Associado\n\nComprometimento da estanqueidade da estrutura\n\nInfiltração e deterioração precoce do concreto\n\nPatologias estruturais (fissuração e possível corrosão de armaduras)\n\nContaminação do solo e do lençol freático por esgoto não tratado\n\nComprometimento da durabilidade e desempenho operacional da unidade\n\n4. Nível de Risco\n\nNível 3: Crítico (Vermelho)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação do laudo técnico do teste de estanqueidade realizado nos tanques, a fim de confirmar formalmente o resultado do ensaio e identificar eventuais registros de perda de estanqueidade.\n\nCaso o laudo confirme falha no desempenho estrutural ou na impermeabilização, deverá ser executada a correção técnica adequada, com reaplicação do sistema de impermeabilização ou reparo estrutural pertinente, seguida de novo teste de estanqueidade para validação da conformidade."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568394.1051783562,
+                            "y": 7794422.501864433,
+                            "z": 630.1459707021713,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "ee386810-3e69-4685-a631-1dcab83dacbf",
+            "description": "Idem ao anterior.",
+            "createdAt": "2026-02-27T00:12:34.394",
+            "createdBy": "Matheus Prates",
+            "history": [
+                {
+                    "at": "2026-02-27T00:12:34.394",
+                    "by": "Matheus Prates",
+                    "previousText": "",
+                    "newText": "Idem ao anterior."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568394.8281781673,
+                            "y": 7794438.780589908,
+                            "z": 630.2279706895351,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "0616ab76-f075-4aa2-b8ae-37bbffaf8485",
+            "description": "1. Descrição da Ocorrência\n\nObserva-se execução de atividade em altura aproximada de 5 metros.\n\nNão há guarda-corpos instalados na periferia da área de trabalho. Devido à limitação de resolução da imagem, não é possível confirmar a existência de linha de vida ou sistema de ancoragem.\n\nVerifica-se, entretanto, ausência de isolamento físico da área inferior e inexistência de sinalização preventiva, permitindo potencial circulação de pessoas sob a frente de trabalho.\n\n2. Enquadramento Normativo\n\nNR-35 – Trabalho em Altura\nEstabelece requisitos para proteção contra quedas em atividades realizadas acima de 2,00 m, priorizando medidas de proteção coletiva e prevendo controle de riscos para trabalhadores e terceiros.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nDetermina a adoção de proteção coletiva em trabalhos em altura e a organização segura das áreas de circulação no canteiro.\n\nNR-26 – Sinalização de Segurança\nExige sinalização adequada para advertência de riscos e controle de acesso a áreas perigosas.\n\n3. Risco Associado\n\nQueda de trabalhador em altura\n\nQueda de ferramentas ou materiais sobre pessoas abaixo\n\nAcidente com terceiros devido à ausência de isolamento da área inferior\n\n4. Nível de Risco\n\nNível 2 – Médio\n(Atividade em altura com indícios de ausência de proteção coletiva e ausência evidente de isolamento da área inferior, devendo ser verificada em campo.)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação em campo das condições reais de execução da atividade, a fim de confirmar:\n\nExistência de sistema de proteção contra quedas (linha de vida, ancoragem ou outro sistema equivalente);\n\nAtendimento aos requisitos de segurança previstos na NR-35;\n\nImplementação de medidas de proteção coletiva adequadas.\n\nAdicionalmente, recomenda-se a imediata implantação de isolamento físico da área inferior e sinalização de advertência, caso ainda não estejam instalados, de forma a impedir circulação sob a área de trabalho e reduzir o risco de acidentes com terceiros.",
+            "createdAt": "2026-02-27T00:46:10.560",
+            "createdBy": "Matheus Prates",
+            "history": [
+                {
+                    "at": "2026-02-27T00:46:10.560",
+                    "by": "Matheus Prates",
+                    "previousText": "",
+                    "newText": "1. Descrição da Ocorrência\n\nObserva-se execução de atividade em altura aproximada de 5 metros.\n\nNão há guarda-corpos instalados na periferia da área de trabalho. Devido à limitação de resolução da imagem, não é possível confirmar a existência de linha de vida ou sistema de ancoragem.\n\nVerifica-se, entretanto, ausência de isolamento físico da área inferior e inexistência de sinalização preventiva, permitindo potencial circulação de pessoas sob a frente de trabalho.\n\n2. Enquadramento Normativo\n\nNR-35 – Trabalho em Altura\nEstabelece requisitos para proteção contra quedas em atividades realizadas acima de 2,00 m, priorizando medidas de proteção coletiva e prevendo controle de riscos para trabalhadores e terceiros.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nDetermina a adoção de proteção coletiva em trabalhos em altura e a organização segura das áreas de circulação no canteiro.\n\nNR-26 – Sinalização de Segurança\nExige sinalização adequada para advertência de riscos e controle de acesso a áreas perigosas.\n\n3. Risco Associado\n\nQueda de trabalhador em altura\n\nQueda de ferramentas ou materiais sobre pessoas abaixo\n\nAcidente com terceiros devido à ausência de isolamento da área inferior\n\n4. Nível de Risco\n\nNível 2 – Médio\n(Atividade em altura com indícios de ausência de proteção coletiva e ausência evidente de isolamento da área inferior, devendo ser verificada em campo.)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação em campo das condições reais de execução da atividade, a fim de confirmar:\n\nExistência de sistema de proteção contra quedas (linha de vida, ancoragem ou outro sistema equivalente);\n\nAtendimento aos requisitos de segurança previstos na NR-35;\n\nImplementação de medidas de proteção coletiva adequadas.\n\nAdicionalmente, recomenda-se a imediata implantação de isolamento físico da área inferior e sinalização de advertência, caso ainda não estejam instalados, de forma a impedir circulação sob a área de trabalho e reduzir o risco de acidentes com terceiros."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568374.4894527793,
+                            "y": 7794447.808452666,
+                            "z": 633.0782582759857,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568383.7840278149,
+                            "y": 7794440.594589949,
+                            "z": 632.940970659256,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568375.3744528294,
+                            "y": 7794440.600589991,
+                            "z": 633.050395488739,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568372.309877634,
+                            "y": 7794443.547589779,
+                            "z": 633.0679707527161,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "82e667a2-9153-4bbe-b438-25e9a686f849",
+            "description": "Caminhão de obra parado",
+            "createdAt": "2026-02-27T09:21:19.651",
+            "createdBy": "WELLINGHTON PEREIRA GOMES",
+            "history": [
+                {
+                    "at": "2026-02-27T09:21:19.651",
+                    "by": "WELLINGHTON PEREIRA GOMES",
+                    "previousText": "",
+                    "newText": "Caminhão de obra parado"
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_06-11",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568400.731926918,
+                            "y": 7794369.221612126,
+                            "z": 671.1807155609131,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "2e4c0887-0f0a-4dc3-a875-388432d3f79d",
+            "description": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas.",
+            "createdAt": "2026-02-27T09:26:15.435",
+            "createdBy": "DENISON DE SOUZA HANELT",
+            "history": [
+                {
+                    "at": "2026-02-27T09:26:15.435",
+                    "by": "DENISON DE SOUZA HANELT",
+                    "previousText": "",
+                    "newText": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568365.3495900333,
+                            "y": 7794455.114027858,
+                            "z": 628.726683139801,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "13730554-8bb0-498e-a4ef-121b8720a7e3",
+            "description": "1. Descrição da Ocorrência\n\nObserva-se execução de atividade em altura aproximada de 5 metros.\n\nNão há guarda-corpos instalados na periferia da área de trabalho. Devido à limitação de resolução da imagem, não é possível confirmar a existência de linha de vida ou sistema de ancoragem.\n\nVerifica-se, entretanto, ausência de isolamento físico da área inferior e inexistência de sinalização preventiva, permitindo potencial circulação de pessoas sob a frente de trabalho.\n\n2. Enquadramento Normativo\n\nNR-35 – Trabalho em Altura\nEstabelece requisitos para proteção contra quedas em atividades realizadas acima de 2,00 m, priorizando medidas de proteção coletiva e prevendo controle de riscos para trabalhadores e terceiros.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nDetermina a adoção de proteção coletiva em trabalhos em altura e a organização segura das áreas de circulação no canteiro.\n\nNR-26 – Sinalização de Segurança\nExige sinalização adequada para advertência de riscos e controle de acesso a áreas perigosas.\n\n3. Risco Associado\n\nQueda de trabalhador em altura\n\nQueda de ferramentas ou materiais sobre pessoas abaixo\n\nAcidente com terceiros devido à ausência de isolamento da área inferior\n\n4. Nível de Risco\n\nNível 2 – Médio\n(Atividade em altura com indícios de ausência de proteção coletiva e ausência evidente de isolamento da área inferior, devendo ser verificada em campo.)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação em campo das condições reais de execução da atividade, a fim de confirmar:\n\nExistência de sistema de proteção contra quedas (linha de vida, ancoragem ou outro sistema equivalente);\n\nAtendimento aos requisitos de segurança previstos na NR-35;\n\nImplementação de medidas de proteção coletiva adequadas.\n\nAdicionalmente, recomenda-se a imediata implantação de isolamento físico da área inferior e sinalização de advertência, caso ainda não estejam instalados, de forma a impedir circulação sob a área de trabalho e reduzir o risco de acidentes com terceiros.",
+            "createdAt": "2026-02-27T09:27:33.066",
+            "createdBy": "DENISON DE SOUZA HANELT",
+            "history": [
+                {
+                    "at": "2026-02-27T09:27:33.066",
+                    "by": "DENISON DE SOUZA HANELT",
+                    "previousText": "",
+                    "newText": "1. Descrição da Ocorrência\n\nObserva-se execução de atividade em altura aproximada de 5 metros.\n\nNão há guarda-corpos instalados na periferia da área de trabalho. Devido à limitação de resolução da imagem, não é possível confirmar a existência de linha de vida ou sistema de ancoragem.\n\nVerifica-se, entretanto, ausência de isolamento físico da área inferior e inexistência de sinalização preventiva, permitindo potencial circulação de pessoas sob a frente de trabalho.\n\n2. Enquadramento Normativo\n\nNR-35 – Trabalho em Altura\nEstabelece requisitos para proteção contra quedas em atividades realizadas acima de 2,00 m, priorizando medidas de proteção coletiva e prevendo controle de riscos para trabalhadores e terceiros.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nDetermina a adoção de proteção coletiva em trabalhos em altura e a organização segura das áreas de circulação no canteiro.\n\nNR-26 – Sinalização de Segurança\nExige sinalização adequada para advertência de riscos e controle de acesso a áreas perigosas.\n\n3. Risco Associado\n\nQueda de trabalhador em altura\n\nQueda de ferramentas ou materiais sobre pessoas abaixo\n\nAcidente com terceiros devido à ausência de isolamento da área inferior\n\n4. Nível de Risco\n\nNível 2 – Médio\n(Atividade em altura com indícios de ausência de proteção coletiva e ausência evidente de isolamento da área inferior, devendo ser verificada em campo.)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação em campo das condições reais de execução da atividade, a fim de confirmar:\n\nExistência de sistema de proteção contra quedas (linha de vida, ancoragem ou outro sistema equivalente);\n\nAtendimento aos requisitos de segurança previstos na NR-35;\n\nImplementação de medidas de proteção coletiva adequadas.\n\nAdicionalmente, recomenda-se a imediata implantação de isolamento físico da área inferior e sinalização de advertência, caso ainda não estejam instalados, de forma a impedir circulação sob a área de trabalho e reduzir o risco de acidentes com terceiros."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568383.2923156023,
+                            "y": 7794440.936589956,
+                            "z": 633.1282582879066,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568375.2584527731,
+                            "y": 7794441.034590006,
+                            "z": 632.8763957023621,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568374.3464527726,
+                            "y": 7794447.67416501,
+                            "z": 632.9689707756042,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568372.7331651449,
+                            "y": 7794443.376877427,
+                            "z": 633.2222582995892,
+                            "color": "#d80303"
+                        },
+                        {
+                            "x": 568372.6171652079,
+                            "y": 7794446.479165077,
+                            "z": 631.6679706573486,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "0ee2703f-165b-4691-bf1d-933bf5ec2f11",
+            "description": "1. Descrição\nObserva-se que dois tanques dos reatores MBBR encontram-se cheios de água, indicando provável realização de teste de estanqueidade.\n\nVerificam-se marcas de umidade\/escorrimento nas faces externas das paredes dos tanques, sugerindo possível falha de impermeabilização ou perda de estanqueidade da estrutura.\n\n2. Enquadramento Normativo\n\nNorma COPASA T.175-3 – Projeto e Execução de Estruturas em Concreto para Obras de Saneamento\nEstabelece requisitos para execução, controle tecnológico, desempenho estrutural e estanqueidade de estruturas em concreto destinadas a obras de saneamento.\n\nNorma COPASA T.233-1 – Concepção de Sistemas de Esgotamento Sanitário\nDetermina diretrizes para confiabilidade, durabilidade e integridade das unidades operacionais de ETE.\n\n3. Risco Associado\n\nComprometimento da estanqueidade da estrutura\n\nInfiltração e deterioração precoce do concreto\n\nPatologias estruturais (fissuração e possível corrosão de armaduras)\n\nContaminação do solo e do lençol freático por esgoto não tratado\n\nComprometimento da durabilidade e desempenho operacional da unidade\n\n4. Nível de Risco\n\nNível 3: Crítico (Vermelho)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação do laudo técnico do teste de estanqueidade realizado nos tanques, a fim de confirmar formalmente o resultado do ensaio e identificar eventuais registros de perda de estanqueidade.\n\nCaso o laudo confirme falha no desempenho estrutural ou na impermeabilização, deverá ser executada a correção técnica adequada, com reaplicação do sistema de impermeabilização ou reparo estrutural pertinente, seguida de novo teste de estanqueidade para validação da conformidade.",
+            "createdAt": "2026-02-27T09:28:25.456",
+            "createdBy": "DENISON DE SOUZA HANELT",
+            "history": [
+                {
+                    "at": "2026-02-27T09:28:25.456",
+                    "by": "DENISON DE SOUZA HANELT",
+                    "previousText": "",
+                    "newText": "1. Descrição\nObserva-se que dois tanques dos reatores MBBR encontram-se cheios de água, indicando provável realização de teste de estanqueidade.\n\nVerificam-se marcas de umidade\/escorrimento nas faces externas das paredes dos tanques, sugerindo possível falha de impermeabilização ou perda de estanqueidade da estrutura.\n\n2. Enquadramento Normativo\n\nNorma COPASA T.175-3 – Projeto e Execução de Estruturas em Concreto para Obras de Saneamento\nEstabelece requisitos para execução, controle tecnológico, desempenho estrutural e estanqueidade de estruturas em concreto destinadas a obras de saneamento.\n\nNorma COPASA T.233-1 – Concepção de Sistemas de Esgotamento Sanitário\nDetermina diretrizes para confiabilidade, durabilidade e integridade das unidades operacionais de ETE.\n\n3. Risco Associado\n\nComprometimento da estanqueidade da estrutura\n\nInfiltração e deterioração precoce do concreto\n\nPatologias estruturais (fissuração e possível corrosão de armaduras)\n\nContaminação do solo e do lençol freático por esgoto não tratado\n\nComprometimento da durabilidade e desempenho operacional da unidade\n\n4. Nível de Risco\n\nNível 3: Crítico (Vermelho)\n\n5. Recomendação Técnica\n\nRecomenda-se a verificação do laudo técnico do teste de estanqueidade realizado nos tanques, a fim de confirmar formalmente o resultado do ensaio e identificar eventuais registros de perda de estanqueidade.\n\nCaso o laudo confirme falha no desempenho estrutural ou na impermeabilização, deverá ser executada a correção técnica adequada, com reaplicação do sistema de impermeabilização ou reparo estrutural pertinente, seguida de novo teste de estanqueidade para validação da conformidade."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568396.0866026878,
+                            "y": 7794437.917439938,
+                            "z": 629.9093956947327,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "57cb33cd-b616-4b37-a1dc-906b12881a28",
+            "description": "Idem ao anterior",
+            "createdAt": "2026-02-27T09:30:02.892",
+            "createdBy": "DENISON DE SOUZA HANELT",
+            "history": [
+                {
+                    "at": "2026-02-27T09:30:02.892",
+                    "by": "DENISON DE SOUZA HANELT",
+                    "previousText": "",
+                    "newText": "Idem ao anterior"
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568393.9451782703,
+                            "y": 7794422.314864397,
+                            "z": 629.9343953132629,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "2220d92f-804a-4d2f-abb3-d67de49b922d",
+            "description": "Material armazenado de maneira inadequada.",
+            "createdAt": "2026-02-27T09:40:14.490",
+            "createdBy": "DENISON DE SOUZA HANELT",
+            "history": [
+                {
+                    "at": "2026-02-27T09:40:14.490",
+                    "by": "DENISON DE SOUZA HANELT",
+                    "previousText": "",
+                    "newText": "Material armazenado de maneira inadequada."
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_26-01",
+                    "images": [],
+                    "pins": [
+                        {
+                            "x": 568377.8297404051,
+                            "y": 7794431.768727183,
+                            "z": 628.1946830749512,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        },
+        {
+            "id": "29104004-2702-435e-a059-8fc43e056ca7",
+            "title": "Teste",
+            "description": "Teste desc",
+            "regulatoryFramework": "",
+            "associatedRisk": "Qualidade da Obra; Impacto Ambiental; Impacto de Vizinhança",
+            "riskLevel": "",
+            "technicalRecommendation": "",
+            "createdAt": "2026-02-27T20:19:08.750",
+            "createdBy": "Anônimo",
+            "history": [
+                {
+                    "at": "2026-02-27T20:19:08.750",
+                    "by": "Anônimo",
+                    "previousText": "",
+                    "newText": "Teste desc"
+                }
+            ],
+            "references": [
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_04-12",
+                    "images": [
+                        "DJI_0927"
+                    ],
+                    "pins": [],
+                    "objects": ""
+                },
+                {
+                    "methodology": "Point cloud",
+                    "project": "Juatuba_15-01",
+                    "images": [
+                        "DJI_0407"
+                    ],
+                    "pins": [
+                        {
+                            "x": 568372.7550430298,
+                            "y": 7794399.022794813,
+                            "z": 632.7702903747559,
+                            "color": "#d80303"
+                        }
+                    ],
+                    "objects": ""
+                }
+            ]
+        }
+    ]
+}

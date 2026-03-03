@@ -54,9 +54,14 @@ function createFrustumHelperMesh(fov = 60, aspect = 1.5, near = 1, far = 50) {
     group.add(solidMesh);
     group.add(wireframe);
     // Desenhar frustums após a nuvem para ficarem visíveis (evitar oclusão pela nuvem)
-    group.renderOrder = 1;
-    solidMesh.renderOrder = 1;
-    wireframe.renderOrder = 1;
+    // Usar renderOrder maior para garantir que frustums sejam renderizados por cima
+    group.renderOrder = 1000;
+    solidMesh.renderOrder = 1000;
+    wireframe.renderOrder = 1000;
+    // Garantir que frustums sejam renderizados mesmo quando há sobreposição
+    solidMaterial.depthTest = true;
+    solidMaterial.depthWrite = false;
+    wireframeMaterial.depthTest = true;
     return group;
 }
 
@@ -104,7 +109,7 @@ function ensureCameraFrustumsGroup() {
     if (!scene.cameraFrustumsGroup) {
         scene.cameraFrustumsGroup = new THREE.Group();
         scene.cameraFrustumsGroup.name = "cameraFrustums";
-        scene.cameraFrustumsGroup.renderOrder = 1;
+        scene.cameraFrustumsGroup.renderOrder = 1000;
         scene.scene.add(scene.cameraFrustumsGroup);
     } else if (scene.cameraFrustumsGroup.parent !== scene.scene) {
         if (scene.cameraFrustumsGroup.parent) scene.cameraFrustumsGroup.parent.remove(scene.cameraFrustumsGroup);

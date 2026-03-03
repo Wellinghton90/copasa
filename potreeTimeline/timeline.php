@@ -51,8 +51,21 @@ if (empty($projetosDisponiveis)) {
     <script src="potree/build/potree/potree.js"></script>
     <script src="potree/libs/plasio/js/laslaz.js"></script>
 </head>
-<body>
+<body class="app-layout">
 
+    <header class="top-bar" id="top_bar">
+        <div class="top-bar-left">
+            <select id="top_bar_platform" class="top-bar-platform-select" title="Plataforma" aria-label="Plataforma"></select>
+        </div>
+        <div class="top-bar-center"></div>
+        <div class="top-bar-right">
+            <button class="top-bar-diary-btn" onclick="window.open('data/diario/diario_geral.php', '_blank')">Tabela</button>
+            <button type="button" id="btn_diario" class="top-bar-diary-btn" title="Diário de fiscalização" aria-label="Diário de fiscalização">Diário</button>
+            <div id="top_bar_user_badge" class="top-bar-user-badge" title="Usuário atual" aria-label="Usuário atual"></div>
+        </div>
+    </header>
+
+    <main class="app-main">
     <div class="potree_container">
         <aside class="sidebar-left" id="sidebar_left">
             <button type="button" id="btn_sidebar_config" class="sidebar-btn" data-mode="config" title="Ferramentas Potree (medição, câmera, clipping)">
@@ -67,6 +80,10 @@ if (empty($projetosDisponiveis)) {
                 <span class="sidebar-icon">↔️</span>
                 <span class="sidebar-label">Comparar Fotos</span>
             </button>
+            <button type="button" id="btn_sidebar_compare_clouds" class="sidebar-btn" data-mode="compare_clouds" title="Comparar nuvens">
+                <span class="sidebar-icon">☁️☁️</span>
+                <span class="sidebar-label">Comparar Nuvens</span>
+            </button>
             <button type="button" id="btn_sidebar_fotos_no_ponto" class="sidebar-btn" data-mode="fotos" title="Fotos no ponto">
                 <span class="sidebar-icon">🎯</span>
                 <span class="sidebar-label">Fotos do Ponto</span>
@@ -79,11 +96,20 @@ if (empty($projetosDisponiveis)) {
             </div>
             <div class="left-panel-content" data-mode="camadas" id="left_panel_camadas"></div>
             <div class="left-panel-content" data-mode="compare" id="left_panel_compare"></div>
+            <div class="left-panel-content" data-mode="compare_clouds" id="left_panel_compare_clouds">
+                <!-- Painel criado dinamicamente via CompareCloudsTool.js usando compareCloudsPanelTemplate.js -->
+            </div>
             <div class="left-panel-content" data-mode="fotos" id="left_panel_fotos"></div>
         </div>
 
         <div id="potree_render_area"></div>
+        <div id="developer_offset_container" class="developer-offset-wrapper" aria-hidden="true"></div>
+
+        <div class="right-panel" id="right_panel">
+            <div class="right-panel-content" data-mode="diario" id="right_panel_diario"></div>
+        </div>
     </div>
+    </main>
 
     <footer class="status-bar" id="status_bar">
         <div class="status-bar-left" id="status_bar_message">
@@ -104,12 +130,16 @@ if (empty($projetosDisponiveis)) {
         <?php if (!empty($NUVEM_DEBUG_MSG)): ?>
         console.warn('[NUVEM] Dropdown vazio:', <?php echo json_encode($NUVEM_DEBUG_MSG); ?>);
         <?php endif; ?>
+        <?php
+        // Diário único: sempre ler/gravar o mesmo JSON (data/diario/MatheusPrates.json), independente do usuário
+        $diaryUserId = 'MatheusPrates';
+        $diaryUserDisplay = isset($_SESSION['user_copasa']['nome']) ? trim($_SESSION['user_copasa']['nome']) : 'Anônimo';
+        ?>
+        window.INSPECTION_DIARY_USER = <?php echo json_encode($diaryUserId); ?>;
+        window.INSPECTION_DIARY_USER_DISPLAY = <?php echo json_encode($diaryUserDisplay); ?>;
+        window.INSPECTION_DIARY_USER_ROLE = <?php echo json_encode($_SESSION['usuario_cargo'] ?? 'admin'); ?>;
     </script>
     <script type="module" src="js/viewer/timeline.js"></script>
-    <script src="js/viewer/viewer-global.js"></script>
-    <script type="module" src="js/tools/photos-at-point.js"></script>
-    <script type="module" src="js/tools/compare-photos.js"></script>
-    <script type="module" src="js/tools/layers.js"></script>
 
 </body>
 </html>

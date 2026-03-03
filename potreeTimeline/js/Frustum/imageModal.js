@@ -10,7 +10,7 @@
  * @param {number|string} [ui.maxWidth='min(95vw, 1600px)'] - Largura máx. do conteúdo
  */
 export function showCameraImage(cameraInfo, ui = {}) {
-  console.log('📸 Mostrando imagem da câmera:', cameraInfo.name);
+  // console.log('📸 Mostrando imagem da câmera:', cameraInfo.name);
 
   // Criar modal (backdrop) - ocupando 100% da tela
   const modal = document.createElement('div');
@@ -25,7 +25,7 @@ export function showCameraImage(cameraInfo, ui = {}) {
     zIndex: '10000',
   });
 
-  // Container do conteúdo - ocupando 100% da área
+  // Container do conteúdo (viewport do zoom)
   const imageContainer = document.createElement('div');
   imageContainer.className = 'camera-modal-content';
   Object.assign(imageContainer.style, {
@@ -37,16 +37,32 @@ export function showCameraImage(cameraInfo, ui = {}) {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+    cursor: 'default',
+  });
+
+  // Wrapper para zoom/pan (recebe transform)
+  const zoomWrapper = document.createElement('div');
+  zoomWrapper.className = 'camera-modal-zoom-wrapper';
+  Object.assign(zoomWrapper.style, {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transformOrigin: 'center center',
+    willChange: 'transform',
   });
 
   // Imagem
   const image = document.createElement('img');
   image.alt = `Imagem da câmera ${cameraInfo.name}`;
+  image.draggable = false;
   Object.assign(image.style, {
     maxWidth: '100%',
     maxHeight: '95vh',
     objectFit: 'contain',
-    pointerEvents: 'none',
+    display: 'block',
+    userSelect: 'none',
   });
 
   // Botão de fechar - maior e melhor posicionado
@@ -94,20 +110,24 @@ export function showCameraImage(cameraInfo, ui = {}) {
       image.onerror = null;
 
       image.src = createPlaceholderImage();
-      info.textContent = `Câmera: ${cameraInfo.name} - Imagem não encontrada`;
+      image.alt = `Câmera: ${cameraInfo.name} - Imagem não encontrada`;
     }
   };
 
   image.src = cameraInfo.imagePath;
 
-  // Montagem
-  imageContainer.appendChild(image);
+  // Montagem: imagem dentro do wrapper de zoom, depois viewport e botão
+  zoomWrapper.appendChild(image);
+  imageContainer.appendChild(zoomWrapper);
   imageContainer.appendChild(closeButton);
   modal.appendChild(imageContainer);
   document.body.appendChild(modal);
 
-  // Eventos de fechamento
-  setupModalCloseEvents(modal, closeButton, imageContainer, image);
+  // Zoom e pan
+  setupImageZoomPan(imageContainer, zoomWrapper);
+
+  // Eventos de fechamento (não fechar ao clicar na área da imagem/zoom)
+  setupModalCloseEvents(modal, closeButton, imageContainer, zoomWrapper);
 }
 
 
@@ -120,13 +140,84 @@ function createPlaceholderImage() {
 }
 
 /**
+ * Configura zoom (roda do mouse) e pan (arrastar) na imagem do modal
+ * @param {HTMLElement} viewport - Container com overflow hidden (viewport)
+ * @param {HTMLElement} zoomWrapper - Elemento que recebe transform scale/translate
+ */
+function setupImageZoomPan(viewport, zoomWrapper) {
+  let scale = 1;
+  let panX = 0;
+  let panY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let startPanX = 0;
+  let startPanY = 0;
+
+  const minScale = 0.5;
+  const maxScale = 5;
+  const zoomStep = 0.15;
+
+  function applyTransform() {
+    zoomWrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+  }
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left - rect.width / 2;
+    const my = e.clientY - rect.top - rect.height / 2;
+    const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
+    const newScale = Math.min(maxScale, Math.max(minScale, scale + delta));
+    if (newScale === scale) return;
+    // Zoom em direção ao cursor
+    const factor = newScale / scale;
+    panX = mx - (mx - panX) * factor;
+    panY = my - (my - panY) * factor;
+    scale = newScale;
+    applyTransform();
+  }, { passive: false });
+
+  zoomWrapper.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startPanX = panX;
+    startPanY = panY;
+    viewport.style.cursor = 'grabbing';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    panX = startPanX + (e.clientX - startX);
+    panY = startPanY + (e.clientY - startY);
+    applyTransform();
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      viewport.style.cursor = scale > 1 ? 'grab' : 'default';
+    }
+  });
+
+  zoomWrapper.addEventListener('mouseenter', () => {
+    if (scale > 1 && !isDragging) viewport.style.cursor = 'grab';
+  });
+  zoomWrapper.addEventListener('mouseleave', () => {
+    if (!isDragging) viewport.style.cursor = 'default';
+  });
+}
+
+/**
  * Configura os eventos de fechamento do modal
  * @param {HTMLElement} modal - Elemento do modal
  * @param {HTMLElement} closeButton - Botão de fechar
  * @param {HTMLElement} imageContainer - Container da imagem
- * @param {HTMLElement} image - Elemento da imagem
+ * @param {HTMLElement} zoomWrapper - Wrapper da imagem (clique aqui não fecha)
  */
-function setupModalCloseEvents(modal, closeButton, imageContainer, image) {
+function setupModalCloseEvents(modal, closeButton, imageContainer, zoomWrapper) {
     // Função para fechar o modal
     const closeModal = function() {
         if (document.body.contains(modal)) {
@@ -141,15 +232,15 @@ function setupModalCloseEvents(modal, closeButton, imageContainer, image) {
         closeModal();
     });
     
-    // Fechar ao clicar em qualquer lugar do modal (fundo ou container, mas não na imagem)
+    // Fechar ao clicar em qualquer lugar do modal (fundo ou bordas do container, mas não na imagem)
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target === imageContainer) {
             closeModal();
         }
     });
     
-    // Prevenir que clique na imagem feche o modal
-    image.addEventListener('click', (e) => e.stopPropagation());
+    // Prevenir que clique na área da imagem feche o modal
+    zoomWrapper.addEventListener('click', (e) => e.stopPropagation());
     
     // Fechar modal com tecla ESC
     const handleKeyPress = function(event) {

@@ -1,0 +1,170 @@
+/**
+ * Estilos do painel de camadas (layers)
+ */
+
+/* --- Painel Camadas (Layers): estilo TCU, desliza da direita --- */
+.camadas-settings-panel {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 300px;
+    background: rgba(50, 60, 70, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    max-height: calc(100vh - 80px);
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.camadas-settings-panel.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.camadas-settings-panel-embedded {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-height: 100%;
+    transform: none;
+    visibility: visible;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.camadas-settings-panel-embedded .camadas-panel-content {
+    padding-left: 24px;
+}
+
+.camadas-settings-panel-embedded .camadas-panel-header {
+    padding-left: 16px;
+}
+
+.camadas-panel-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px 16px;
+    background: #3D464F;
+}
+
+/* Barra entre header e content: só a linha recuada, não o header inteiro */
+.camadas-panel-header::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.camadas-panel-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    font-family: 'Muli', sans-serif;
+    margin: 0;
+}
+
+.camadas-close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s ease;
+}
+
+.camadas-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.camadas-panel-content {
+    padding: 16px 20px 16px 20px; /* E: padding-bottom menor abaixo dos checkboxes */
+    background: #3D464F;
+}
+
+.camadas-panel-content .setting-group {
+    margin-bottom: 0;
+}
+
+.camadas-panel-content .setting-group h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 20px; /* D: espaço entre "Visibilidade" e os checkboxes */
+    font-family: 'Muli', sans-serif;
+}
+
+/* Checkboxes customizados (estilo TCU) */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    transition: color 0.2s ease;
+    user-select: none;
+    font-family: 'Muli', sans-serif;
+}
+
+.camadas-panel-content .checkbox-label:last-child {
+    margin-bottom: 0; /* E: remove margem extra abaixo do último checkbox */
+}
+
+.checkbox-label:hover {
+    color: #4fc3f7;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: #4fc3f7;
+    border-color: #4fc3f7;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+}

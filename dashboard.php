@@ -991,12 +991,6 @@ if (isset($_GET['logout'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="perguntas_risco.php">
-                            <i class="fas fa-list-check me-1"></i>
-                            Perguntas de Risco
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#relatorios">
                             <i class="fas fa-chart-bar me-1"></i>
                             Relatórios

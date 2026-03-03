@@ -1,0 +1,780 @@
+/**
+ * Estilos do conteúdo do Diário de fiscalização (lista, cards, formulário).
+ * O botão "Diário" fica na barra superior (ver top-bar.css).
+ */
+
+.diary-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.diary-panel-header .diary-panel-title,
+.diary-panel-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    font-family: 'Muli', sans-serif;
+    margin: 0;
+}
+
+.diary-panel-close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s ease;
+}
+
+.diary-panel-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.diary-panel-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.diary-entry-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.diary-entry-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.diary-entry-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.diary-entry-card.expanded .diary-entry-title {
+    margin-bottom: 8px;
+}
+
+.diary-entry-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.diary-entry-expanded {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.diary-entry-expanded-row {
+    margin-bottom: 6px;
+}
+
+.diary-entry-expanded-row:last-child {
+    margin-bottom: 0;
+}
+
+.diary-entry-expanded-label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-right: 6px;
+}
+
+.diary-entry-meta {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.diary-entry-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.diary-entry-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.diary-entry-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.diary-entry-btn-icon {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diary-entry-btn-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.diary-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: inherit;
+}
+
+.diary-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.diary-btn-primary {
+    background: rgba(2, 94, 115, 0.9);
+}
+
+.diary-btn-primary:hover {
+    background: rgba(2, 94, 115, 1);
+}
+
+.diary-form-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    flex-shrink: 0;
+}
+
+.diary-btn-new-entry {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.diary-btn-new-entry:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(2, 94, 115, 0.6);
+}
+
+.diary-form-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.diary-form-title-row .diary-field-label {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.diary-form-toggle-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.diary-form-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}
+
+.diary-form-toggle-icon {
+    display: inline-block;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+}
+
+.diary-form-section label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 6px;
+}
+
+.diary-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.diary-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 2px;
+}
+
+.diary-input,
+.diary-textarea,
+.diary-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.diary-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.diary-select {
+    cursor: pointer;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Opções do dropdown (como \"Selecione a nuvem\" em Comparar Nuvens) */
+.diary-optional-modal .diary-select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.diary-form-section .diary-input:focus,
+.diary-form-section .diary-textarea:focus,
+.diary-form-section .diary-select:focus {
+    outline: none;
+    border-color: rgba(2, 94, 115, 0.8);
+}
+
+.diary-form-section textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.diary-form-section textarea:focus {
+    outline: none;
+    border-color: rgba(2, 94, 115, 0.8);
+}
+
+.diary-refs-row {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    align-content: center;
+}
+
+.diary-refs-row .diary-refs-ver-todas {
+    margin-left: auto;
+}
+
+.diary-ref-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.diary-ref-chip-label {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.diary-ref-chip-remove {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.diary-ref-chip-remove:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.diary-form-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.diary-form-actions-left {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.diary-form-actions-right {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.diary-btn-plus {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.diary-btn-plus:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.diary-plus-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 6px;
+    background: rgba(45, 55, 65, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 6px;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    display: none;
+}
+
+.diary-plus-menu.diary-plus-menu-open {
+    display: block;
+}
+
+.diary-plus-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.diary-plus-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.diary-plus-menu-icon {
+    font-size: 20px;
+}
+
+.diary-plus-menu-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.diary-refs-ver-todas {
+    padding: 4px 10px;
+    font-size: 12px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.diary-refs-ver-todas:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modal de referências (central, overlay) */
+.diary-refs-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.diary-refs-modal.diary-refs-modal-open {
+    display: flex;
+}
+
+.diary-refs-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.diary-refs-modal-content {
+    position: relative;
+    background: #2d3741;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    max-width: 420px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Modal de campos opcionais reaproveita base do modal de refs */
+.diary-optional-modal .diary-refs-modal-content {
+    max-width: 480px;
+}
+
+.diary-optional-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.diary-optional-field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.diary-optional-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.diary-optional-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.diary-optional-modal-footer {
+    padding: 10px 16px 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.diary-refs-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.diary-refs-modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.diary-refs-modal-close {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diary-refs-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.diary-refs-modal-body {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.diary-refs-modal-ref-block {
+    margin-bottom: 20px;
+}
+
+.diary-refs-modal-ref-block:last-child {
+    margin-bottom: 0;
+}
+
+.diary-refs-modal-ref-title {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.diary-refs-modal-section {
+    margin-bottom: 16px;
+}
+
+.diary-refs-modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.diary-refs-modal-section-title {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.diary-refs-modal-empty {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.diary-refs-modal-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.diary-refs-modal-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.diary-refs-modal-item:last-child {
+    margin-bottom: 0;
+}
+
+.diary-refs-modal-item-index {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 1.5em;
+    flex-shrink: 0;
+}
+
+.diary-refs-modal-item-name {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.diary-refs-modal-item-remove {
+    padding: 4px 10px;
+    font-size: 11px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(229, 115, 115, 0.8);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.diary-refs-modal-item-remove:hover {
+    background: #e57373;
+}
+
+.diary-refs-modal-item-image {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.diary-refs-modal-item-image .diary-refs-modal-item-image-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-right: 10px;
+}
+
+.diary-refs-modal-item-image .diary-refs-modal-item-image-wrap img {
+    width: 100%;
+    max-width: 160px;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.diary-refs-modal-item-image .diary-refs-modal-item-image-wrap .diary-refs-modal-item-name {
+    font-size: 12px;
+    text-align: center;
+}
+
+.diary-refs-modal-item-image .diary-refs-modal-item-remove {
+    margin-left: auto;
+}
+
+.diary-empty {
+    padding: 24px 16px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+.diary-loading,
+.diary-error {
+    padding: 16px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+}
+
+.diary-error {
+    color: #e57373;
+}
+
+/* Caixa flutuante "Cor do pin" (centralizada no topo, abaixo da barra), visível só ao clicar em Pin até colocar o pin.
+   Fica em body para não alterar o container do Potree (evita quebra do WebGL). */
+.diary-pin-color-float {
+    position: fixed;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+}
+
+.diary-pin-color-float.diary-pin-color-float-visible {
+    display: flex;
+}
+
+.diary-pin-color-float-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+}
+
+.diary-pin-color-float input[type="color"] {
+    width: 36px;
+    height: 28px;
+    padding: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+}

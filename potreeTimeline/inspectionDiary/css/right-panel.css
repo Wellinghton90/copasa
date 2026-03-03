@@ -1,0 +1,42 @@
+/**
+ * Estilos do painel lateral direito (Diário de fiscalização).
+ * Largura fixa; animação por transform para evitar flash branco na abertura.
+ */
+
+.right-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 320px;
+    z-index: 105;
+    overflow: hidden;
+    background: #1B1F23;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.25);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    pointer-events: none;
+}
+
+.right-panel.open {
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.right-panel-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #1B1F23;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.right-panel-content.active {
+    opacity: 1;
+    pointer-events: auto;
+}
