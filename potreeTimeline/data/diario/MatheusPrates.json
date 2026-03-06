@@ -2,99 +2,6 @@
     "user": "MatheusPrates",
     "entries": [
         {
-            "id": "d9f124e2-d9f1-4559-9145-feec80392b2b",
-            "description": "Teste anotação",
-            "createdAt": "2026-02-26T17:34:33.236",
-            "createdBy": "Matheus Prates",
-            "history": [
-                {
-                    "at": "2026-02-26T17:34:33.236",
-                    "by": "Matheus Prates",
-                    "previousText": "",
-                    "newText": "Teste anotação"
-                }
-            ],
-            "references": [
-                {
-                    "methodology": "Point cloud",
-                    "project": "Juatuba_06-11",
-                    "images": [
-                        "DJI_0377",
-                        "DJI_0273",
-                        "DJI_0274",
-                        "DJI_0270"
-                    ],
-                    "pins": [
-                        {
-                            "x": 568385.4507954121,
-                            "y": 7794387.725743294,
-                            "z": 669.8527154922485,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568405.1014924049,
-                            "y": 7794394.116874576,
-                            "z": 673.1597156524658,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568367.3820986748,
-                            "y": 7794399.172308922,
-                            "z": 669.990149974823,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568386.195795536,
-                            "y": 7794382.048743367,
-                            "z": 669.6137154102325,
-                            "color": "#d80303"
-                        }
-                    ],
-                    "objects": ""
-                },
-                {
-                    "methodology": "Point cloud",
-                    "project": "Juatuba_08-11",
-                    "images": [
-                        "DJI_0642"
-                    ],
-                    "pins": [
-                        {
-                            "x": 568383.8354148865,
-                            "y": 7794387.156697273,
-                            "z": 634.8721027374268,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568372.4284143448,
-                            "y": 7794374.846200466,
-                            "z": 634.791600227356,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568385.5349121094,
-                            "y": 7794374.194200516,
-                            "z": 634.5966000556946,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568388.9914088249,
-                            "y": 7794378.467200279,
-                            "z": 634.6426000595093,
-                            "color": "#d80303"
-                        },
-                        {
-                            "x": 568402.5319057703,
-                            "y": 7794398.334194422,
-                            "z": 640.3758487701416,
-                            "color": "#d80303"
-                        }
-                    ],
-                    "objects": ""
-                }
-            ]
-        },
-        {
             "id": "80720af6-7255-4497-84e5-dbfe5bd71d0e",
             "description": "Verifica-se pilha de tábuas\/pontaletes de madeira dispostas de forma desordenada diretamente sobre o solo, obstruindo área de circulação interna da obra.\n\nEnquadramento Normativo\n\nNorma COPASA T.068-3 – Implantação de Canteiro de Obras\nDetermina a organização do canteiro e a manutenção das áreas de circulação desobstruídas e seguras.\n\nNR-18 – Condições e Meio Ambiente de Trabalho na Indústria da Construção\nEstabelece que os materiais devem ser armazenados de forma organizada e segura, mantendo vias de circulação livres de obstáculos.\n\nRisco Associado\n\nQueda ao mesmo nível\n\nTombamento de material\n\nInterferência na circulação segura de trabalhadores\n\nObstrução em caso de evacuação de emergência.\n\nNível de Risco\n\nNível 2: Médio (amarelo)\n\nRecomendação Técnica\n\nProvidenciar reorganização imediata do material em local apropriado, garantindo empilhamento estável e manutenção das rotas de circulação permanentemente desobstruídas.",
             "createdAt": "2026-02-26T23:02:47.988",
@@ -468,50 +375,24 @@
             ]
         },
         {
-            "id": "29104004-2702-435e-a059-8fc43e056ca7",
+            "id": "300cec63-4f39-44a2-8944-fdef69283b53",
             "title": "Teste",
-            "description": "Teste desc",
+            "description": "testeeee",
             "regulatoryFramework": "",
-            "associatedRisk": "Qualidade da Obra; Impacto Ambiental; Impacto de Vizinhança",
+            "associatedRisk": "",
             "riskLevel": "",
             "technicalRecommendation": "",
-            "createdAt": "2026-02-27T20:19:08.750",
-            "createdBy": "Anônimo",
+            "createdAt": "2026-03-06T15:24:39.340",
+            "createdBy": "WELLINGHTON PEREIRA GOMES",
             "history": [
                 {
-                    "at": "2026-02-27T20:19:08.750",
-                    "by": "Anônimo",
+                    "at": "2026-03-06T15:24:39.340",
+                    "by": "WELLINGHTON PEREIRA GOMES",
                     "previousText": "",
-                    "newText": "Teste desc"
+                    "newText": "testeeee"
                 }
             ],
-            "references": [
-                {
-                    "methodology": "Point cloud",
-                    "project": "Juatuba_04-12",
-                    "images": [
-                        "DJI_0927"
-                    ],
-                    "pins": [],
-                    "objects": ""
-                },
-                {
-                    "methodology": "Point cloud",
-                    "project": "Juatuba_15-01",
-                    "images": [
-                        "DJI_0407"
-                    ],
-                    "pins": [
-                        {
-                            "x": 568372.7550430298,
-                            "y": 7794399.022794813,
-                            "z": 632.7702903747559,
-                            "color": "#d80303"
-                        }
-                    ],
-                    "objects": ""
-                }
-            ]
+            "references": []
         }
     ]
 }

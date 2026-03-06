@@ -282,8 +282,8 @@ if (file_exists($jsonPath)) {
                             <th class="col-data">Data/Hora</th>
                             <th class="col-metodo">Método</th>
                             <th class="col-projeto">Projeto</th>
-                            <th class="col-coords">Pixel coords</th>
-                            <th class="col-anotacao">Anotação</th>
+                            <th class="col-coords">Pins</th>
+                            <th class="col-anotacao">Descrição</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -330,12 +330,12 @@ if (file_exists($jsonPath)) {
                 return projects.length ? projects.join(', ') : '-';
             }
 
-            function getAllPoints(refs) {
+            function getPins(refs) {
                 if (!refs || !refs.length) return '-';
                 var list = [];
                 refs.forEach(function(r) {
-                    if (r.points && Array.isArray(r.points)) {
-                        r.points.forEach(function(p) {
+                    if (r.pins && Array.isArray(r.pins)) {
+                        r.pins.forEach(function(p) {
                             list.push((p.x != null ? Number(p.x).toFixed(2) : '') + ', ' +
                                       (p.y != null ? Number(p.y).toFixed(2) : '') + ', ' +
                                       (p.z != null ? Number(p.z).toFixed(2) : ''));
@@ -347,16 +347,16 @@ if (file_exists($jsonPath)) {
 
             var rows = (diarioData.entries || []).map(function(entry) {
                 var refs = entry.references || [];
-                var text = entry.text || '-';
-                var short = text.length > 200 ? text.substring(0, 200) + '…' : text;
+                var desc = entry.description || '-';
+                var short = desc.length > 200 ? desc.substring(0, 200) + '…' : desc;
                 return [
                     entry.id || '-',
                     entry.createdBy || '-',
-                    entry.createdAt || '',  // ISO para ordenação; exibição no render
+                    entry.createdAt || '',
                     getMethodology(refs),
                     getProject(refs),
-                    getAllPoints(refs),
-                    { display: short, full: text }
+                    getPins(refs),
+                    { display: short, full: desc }
                 ];
             });
 
@@ -369,7 +369,7 @@ if (file_exists($jsonPath)) {
                     { title: 'Método', data: 3 },
                     { title: 'Projeto', data: 4 },
                     {
-                        title: 'Pixel coords',
+                        title: 'Pins',
                         data: 5,
                         render: function(val) {
                             if (!val || val === '-') return '-';
@@ -381,7 +381,7 @@ if (file_exists($jsonPath)) {
                         }
                     },
                     {
-                        title: 'Anotação',
+                        title: 'Descrição',
                         data: 6,
                         render: function(v) {
                             var t = typeof v === 'object' ? (v.display || v.full || '-') : (v || '-');
@@ -396,6 +396,9 @@ if (file_exists($jsonPath)) {
                 pageLength: 10,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'Todos']],
                 order: [[2, 'desc']],
+                columnDefs: [
+                    { type: 'date', targets: 2 }
+                ],
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
                      '<"row"<"col-sm-12"tr>>' +
                      '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'

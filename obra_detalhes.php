@@ -1952,7 +1952,7 @@ if (isset($_GET['logout'])) {
                                 <h2 class="accordion-header">
                                     <button class="accordion-button <?= $colapsado ?> text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#<?= htmlspecialchars($id_collapse) ?>" aria-expanded="<?= $aria_expanded ?>" aria-controls="<?= htmlspecialchars($id_collapse) ?>" style="background-color: <?= $titulo_cores['fundo'] ?>;">
                                         <b><?= htmlspecialchars($grupo_tipo) ?></b>
-                                        <span class="badge <?= $titulo_cores['badge'] ?> ms-2 opacity-100"><?= number_format($total_pct, 1, ',', '') ?>%</span>
+                                        <span class="badge <?= $titulo_cores['badge'] ?> ms-2 opacity-100"><?= number_format($total_pct, 1, ',', '') ?>% de risco.</span>
                                     </button>
                                 </h2>
                                 <div id="<?= htmlspecialchars($id_collapse) ?>" class="accordion-collapse collapse <?= $expandido ?>" data-bs-parent="#accordionRiscos">
@@ -1974,7 +1974,7 @@ if (isset($_GET['logout'])) {
                                                     <p class="card-text mb-2"><?= nl2br(htmlspecialchars($r['resposta'] ?? '-')) ?></p>
                                                     <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
                                                         <span class="text-muted small">Risco nesta pergunta:</span>
-                                                        <span class="badge <?= $risco_detectado ? 'bg-danger' : 'bg-success' ?>"><?= $risco_detectado ? number_format($pct_esta, 1, ',', '') . '%' : '0%' ?></span>
+                                                        <span class="badge <?= $risco_detectado ? 'bg-danger' : 'bg-success' ?>"><?= $risco_detectado ? number_format($pct_esta, 1, ',', '') . '%' : '0%' ?> de risco.</span>
                                                     </div>
                                                     <div class="mt-2">
                                                         <span class="text-muted small">Evidências fotográficas:</span>
